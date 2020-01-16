@@ -1,5 +1,4 @@
 class BoxPoints(object):
-    """docstring"""
     def __init__(self):
         """Constructor"""
         self.__x_left = []

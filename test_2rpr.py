@@ -41,10 +41,12 @@ def set_param(L, N):
     l2 = L  # Right and upper border of uniform grid
     X1 = np.linspace(l1, l2, N)
     Y1 = np.linspace(l1, l2, N)
+    #Z1 = np.linspace(l1, l2, N)
     X, Y = np.meshgrid(X1, Y1)  # Build X and Y of uniform grid
+    #print(X[0], Y[0])
     return (X, Y)
 
-N = 12  # The number of nodes on uniform grid
+N = 4  # The number of nodes on uniform grid
 
 ##### 2-RPR
 f, U, V, Vmid, C, param_sym = func_2rpr()
@@ -56,15 +58,20 @@ V_ival = [v1, v2]
 L2u = L2v
 d = 6
 X, Y = set_param(L2u, N)
+print(X)
+print(Y)
+#print(np.shape(grid))
+#print(len(grid))
 param = [d]
 unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C, param_sym)
 #####
-
+X1 = np.linspace(-L2u, L2u, N)
+size = 2
 k = 10  # Max number of iterations
 coef = 1.5
 area_points = BoxPoints()
 border_points = BoxPoints()
 
 
-area_points_uni, border_points_uni = check_box(X, Y, N, V_ival, unified_krav_eval, unified_krav_func, coef, k, param)
+area_points_uni, border_points_uni = check_box(X1, size, N, V_ival, unified_krav_eval, unified_krav_func, coef, k, param)
 uni_plotter(area_points_uni, border_points_uni, L2u)

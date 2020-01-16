@@ -25,7 +25,6 @@ def func_1d():
     #param_sym = sym.symbols('d')
     #param_sym = [param_sym]
     f = sym.Matrix([U[0] ** 2 + U[1] ** 2 + V[0] ** 2 - 1])
-    print(f)
     return f, U, V, Vmid, C#, param_sym
 
 
