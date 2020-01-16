@@ -6,8 +6,9 @@ v1, v2, u1, u2, d = sym.symbols('v1, v2, u1, u2, d')
 
 def derive_matrix(g, v):
     """
-    Function for calculating partial derivative of matrix G
+    Function for calculating partial derivative of matrix g
     :param g : array to be derived
+    :param v : variables for derivative
     :return gv: derived matrix
     """
     g_v_all = []

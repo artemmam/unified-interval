@@ -28,21 +28,6 @@ def func_1d():
     return f, U, V, Vmid, C#, param_sym
 
 
-### Setting params
-def set_param(L, N):
-    """
-    Setting size of uniform grid
-    :param L: the length of 1/2 of uniform grid
-    :param N: number of nodes
-    :return: the lists of X and Y coordinates of boxes
-    """
-    l1 = -L  # Left and lower border of uniform grid
-    l2 = L  # Right and upper border of uniform grid
-    X1 = np.linspace(l1, l2, N)
-    Y1 = np.linspace(l1, l2, N)
-    X, Y = np.meshgrid(X1, Y1)  # Build X and Y of uniform grid
-    return (X, Y)
-
 N = 51  # The number of nodes on uniform grid
 
 ##### 1d circle
@@ -52,7 +37,6 @@ L2v = 2 # Upper range of row
 v1 = ival.Interval([0, 1])
 V_ival = [v1]
 L2u = L2v
-X, Y = set_param(L2u, N)
 param = []
 unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C)
 #####
@@ -62,6 +46,8 @@ coef = 1.5
 coef_list = np.linspace(0.0, 5.0, num = 10)
 area_points = BoxPoints()
 border_points = BoxPoints()
+size = 2
+grid = np.linspace(-L2u, L2u, N)
 """
 for c in coef_list:
     print('***')
@@ -70,7 +56,7 @@ for c in coef_list:
                                                    param)
     uni_plotter(area_points_uni, border_points_uni, L2u)
 """
-area_points_uni, border_points_uni = check_box(X, Y, N, V_ival, unified_krav_eval, unified_krav_func, coef, k, param)
+area_points_uni, border_points_uni = check_box(grid, size, V_ival, unified_krav_eval, unified_krav_func, coef, k, param)
 uni_plotter(area_points_uni, border_points_uni, L2u)
 
 
