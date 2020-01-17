@@ -2,10 +2,10 @@ import sympy as sym
 import  interval as ival
 import numpy as np
 from kravchik_operator import get_unified_krav_eval
-from box_class import BoxPoints
 from check_box import check_box
 from unified_krawczyk import unified_krav_eval
 from plot_workspace_area import uni_plotter
+from kravchik_operator import krawczyk_evalutation
 
 
 def func_2rpr():
@@ -37,13 +37,14 @@ L2v = 15  # Upper range of row
 v1 = ival.Interval([L1v, L2v])
 v2 = ival.Interval([L1v, L2v])
 V_ival = [v1, v2]
-L2u = L2v
+L2u = L2v   # the width of the 2-dimensional square
 d = 6
 param = [d]
-unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C, param_sym)
+#unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C, param_sym)
+unified_krav_func = krawczyk_evalutation(f, U, V, Vmid, C, param_sym)
 #####
-grid = np.linspace(-L2u, L2u, N)
-size = 2
+grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
+size = 2  # The dimension of uniform grid
 k = 10  # Max number of iterations
 coef = 1.5
 
