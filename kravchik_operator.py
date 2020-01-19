@@ -38,57 +38,57 @@ def mycos(x):
     return ival.cos(x)
 
 
-def recurent_form(f, U, V, Vmid):
-    #mysin1 = implemented_function(sym.Function('mysin1'), lambda x: mysin(x))
-    #mycos1 = implemented_function(sym.Function('mycos1'), lambda x: mycos(x))
+def recurrent_form(f, V, Vmid):
+    """
+    Produces the right-hand side of the equivalent reccurent form for the equation f(v) = 0
+    :param f: old right-hand side
+    :param V: variables
+    :param Vmid: variables for a middle point
+    :return: the reccurent right-hand side v - L(vmid)^(-1) * f(v)
+    """
     v = sym.Matrix()
     vmid = sym.Matrix()
     for i in range(len(V)):
         v = v.row_insert(i, sym.Matrix([V[i]]))
         vmid = vmid.row_insert(i, sym.Matrix([Vmid[i]]))
-    f_v = derive_matrix(f, v)  # Calculate matrix of partial derivatives of kinematic matrix
-    lam = f_v
+    lam = derive_matrix(f, v)  # Calculate matrix of partial derivatives of kinematic matrix
+    subsv = []
     for i in range(len(v)):
-        lam = lam.subs([(V[i], Vmid[i])])  # Calculate lambda function for recurrent transformation
+        subsv.append((V[i], Vmid[i]))
+    lam = lam.subs(subsv)
     lam = lam ** (-1)
-    # print(lam)
-    # lam = 1 * sym.eye(f.shape[0])
-    g = v - lam * f  # Equivalent recurrent transformation
-    return g
+    return v - lam * f  # Equivalent recurrent transformation
 
-def centered_form(g, U, V, Vmid, C, param = []):
+
+def centered_form(f, U, V, Vmid, C, param = []):
     """
     Centered interval form
-    :param g: recurrent form of system
+    :param f: the function for computing a central form
     :param U: fixed parameters
     :param V: spare parameters
     :param C: point from interval V
     :param param: list of const parameters
     :return: function for calculating centered interval form
     """
-    #mysin1 = implemented_function(sym.Function('mysin1'), lambda x: mysin(x))
-    #mycos1 = implemented_function(sym.Function('mycos1'), lambda x: mycos(x))
     v = sym.Matrix()
     for i in range(len(V)):
         v = v.row_insert(i, sym.Matrix([V[i]]))
-    g_v = derive_matrix(g, v) # Calculate matrix of partial derivatives of matrix g
-    #print(g_v)
+    g_v = derive_matrix(f, v) # Calculate matrix of partial derivatives of matrix g
     c = sym.Matrix()
     for i in range(len(v)):
         c = c.row_insert(i, sym.Matrix([C[i]]))
     v_c = v - c
+    subsv = []
     for i in range(len(V)):
-        g = g.subs([(V[i], C[i])])
-    g_eval = g + g_v * v_c # Calculates classical Krawczyk evaluation
-    #g_eval = g_eval.replace(sym.sin, mysin1)
-    #g_eval = g_eval.replace(sym.cos, mycos1)
-    #print(g_eval)
+        subsv.append((V[i], C[i]))
+    f = f.subs(subsv)
+    g_eval = f + g_v * v_c # Calculates classical central form
     print(g_eval)
     return sym.lambdify([U, V, Vmid, C, param], g_eval)
 
 
 def krawczyk_evalutation(f, U, V, Vmid, C, param = []):
-    return centered_form(recurent_form(f, U, V, Vmid), U, V, Vmid, C, param)
+    return centered_form(recurrent_form(f, V, Vmid), U, V, Vmid, C, param)
 
 
 def get_unified_krav_eval(f, U, V, Vmid, C, param = []):
