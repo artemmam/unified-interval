@@ -14,17 +14,21 @@ def unified_krav_eval(box, V, unified_krav_func, p = 10, param = [], coef = 1):
     """
     V_iter = V.copy()
     Vmid = []
+
     for i in range(len(V)):
         Vmid.append(coef*V[i].mid())
     #print('*****')
     #print('Box')
     #print(U)
-    # print('*****')
+    #print('*****')
+    param_iter = param.copy()
+    param_iter += [box] + [Vmid]
+    #param.append(Vmid)
     for k in range(p):
         C = []
         for i in range(len(V_iter)):
             C.append(V_iter[i].mid())
-        v_krav = unified_krav_func(box, V_iter, Vmid, C, param)  # Calculate Kravchik evaluation for u1, u2
+        v_krav = unified_krav_func(V_iter, C, param_iter)  # Calculate Kravchik evaluation for u1, u2
         #print('-----')
         #print(k)
         #print("New v")

@@ -1,7 +1,6 @@
 import sympy as sym
 import  interval as ival
 import numpy as np
-from kravchik_operator import get_unified_krav_eval
 from check_box import check_box
 from unified_krawczyk import unified_krav_eval
 from plot_workspace_area import uni_plotter

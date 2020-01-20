@@ -20,9 +20,7 @@ def make_boxes_list(grid, dim):
                 U.append(ival.Interval([grid[i % grid_size], grid[i % grid_size + 1]]))
             else:
                 U.append(ival.Interval([grid[fix % grid_size], grid[fix % grid_size + 1]]))
-    U = np.array(U)
-    U = U.reshape(grid_size ** dim, dim)
-    return(U)
+    return np.reshape(U, (grid_size ** dim, dim))
 
 
 def check_box(grid, dim, V, checker, unified_krav_func, coef, p=10, param = []):
@@ -44,11 +42,8 @@ def check_box(grid, dim, V, checker, unified_krav_func, coef, p=10, param = []):
     grid_size = len(grid) - 1
     all_boxes = make_boxes_list(grid, dim)
     for i in range(grid_size**dim):
-        box = []
-        for j in range(dim):
-            box.append(ival.valueToInterval(all_boxes[i, j]))
-        if checker(box, V, unified_krav_func, p, param, coef) == 'inside': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'inside':
-            area_boxes.append(box)
-        elif checker(box, V, unified_krav_func, p, param, coef) == 'border': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'border:
-            border_boxes.append(box)
-    return np.array(area_boxes), np.array(border_boxes)
+        if checker(all_boxes[i], V, unified_krav_func, p, param, coef) == 'inside': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'inside':
+            area_boxes.append(all_boxes[i])
+        elif checker(all_boxes[i], V, unified_krav_func, p, param, coef) == 'border': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'border:
+            border_boxes.append(all_boxes[i])
+    return area_boxes, border_boxes
