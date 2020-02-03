@@ -23,12 +23,12 @@ def func_2rpr():
     C = sym.symbols('c1, c2')
     param_sym = sym.symbols('d')
     param_sym = [param_sym]
-    f = sym.Matrix([[V[0] ** 2 - U[0] ** 2 - U[1] ** 2],
-         [V[1] ** 2 - (U[0] - param_sym[0]) ** 2 - U[1] ** 2]])
+    f = sym.Matrix([[V[0] ** 2 - (U[0] + 0.5 * param_sym[0]) ** 2 - U[1] ** 2],
+         [V[1] ** 2 - (U[0] - 0.5 * param_sym[0]) ** 2 - U[1] ** 2]])
     return f, U, V, Vmid, C, param_sym
 
 
-N = 12  # The number of nodes on uniform grid
+N = 64  # The number of nodes on uniform grid
 ##### 2-RPR
 f, U, V, Vmid, C, param_sym = func_2rpr()
 L1v = 3  # Lower range of row
@@ -37,8 +37,7 @@ v1 = ival.Interval([L1v, L2v])
 v2 = ival.Interval([L1v, L2v])
 V_ival = [v1, v2]
 L2u = L2v   # the width of the 2-dimensional square
-d = 6
-param = [d]
+
 #unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C, param_sym)
 unified_krav_func = krawczyk_evalutation(f, U, V, Vmid, C, param_sym)
 #####
@@ -46,7 +45,8 @@ grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 k = 10  # Max number of iterations
 coef = 1.5
-
-
+d = 6
+param = [d]
 area_points_uni, border_points_uni = check_box(grid, size, V_ival, unified_krav_eval, unified_krav_func, coef, k, param)
 uni_plotter(area_points_uni, border_points_uni, L2u)
+

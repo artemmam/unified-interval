@@ -16,31 +16,19 @@ def unified_krav_eval(box, V, unified_krav_func, p = 10, param = [], coef = 1):
     Vmid = []
 
     for i in range(len(V)):
-        Vmid.append(coef*V[i].mid())
-    #print('*****')
-    #print('Box')
-    #print(U)
-    #print('*****')
+        Vmid.append(coef * V[i].mid())
     param_iter = param.copy()
     param_iter += [box] + [Vmid]
-    #param.append(Vmid)
     for k in range(p):
         C = []
         for i in range(len(V_iter)):
             C.append(V_iter[i].mid())
         v_krav = unified_krav_func(V_iter, C, param_iter)  # Calculate Kravchik evaluation for u1, u2
-        #print('-----')
-        #print(k)
-        #print("New v")
-        #print(v_krav)
-        #print('-----')
-        #print("Old v")
-        #print(V)
-        # print('-----')
         check = True
         for i in range(len(V)):
             if not(v_krav[i][0].isIn(V[i])):
                 check = False
+                break
         if check:
             return 'inside'  # if it is inside previous interval, then it's inside the workspace area
         if k == p - 1:

@@ -31,7 +31,7 @@ def check_box(grid, dim, V, checker, unified_krav_func, coef, p=10, param = []):
     :param V: vector of not fixed interval variables
     :param checker: interval method function for checking box
     :param unified_krav_func: numerical function from symbolic format for calculating interval extension
-    :param the coefficient
+    :param coef: the coefficient
     :param p: the max number of iterations
     :param param: list of system parameters
     :return: list of inside boxes, list of border boxes
