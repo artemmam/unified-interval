@@ -2,7 +2,7 @@ import sympy as sym
 import  interval as ival
 import numpy as np
 from check_box import check_box
-from unified_krawczyk import unified_krav_eval
+from interval_checker import unified_krav_eval
 from plot_workspace_area import uni_plotter
 from kravchik_operator import krawczyk_evalutation
 

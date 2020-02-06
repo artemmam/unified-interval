@@ -2,7 +2,7 @@ import sympy as sym
 import  interval as ival
 import numpy as np
 from check_box import check_box
-from unified_krawczyk import unified_krav_eval
+from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter
 from kravchik_operator import krawczyk_evalutation
 
@@ -39,7 +39,7 @@ V_ival = [v1, v2]
 L2u = L2v   # the width of the 2-dimensional square
 
 #unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C, param_sym)
-unified_krav_func = krawczyk_evalutation(f, U, V, Vmid, C, param_sym)
+interval_extencion = krawczyk_evalutation(f, U, V, Vmid, C, param_sym)
 #####
 grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
@@ -47,6 +47,9 @@ k = 10  # Max number of iterations
 coef = 1.5
 d = 6
 param = [d]
-area_points_uni, border_points_uni = check_box(grid, size, V_ival, unified_krav_eval, unified_krav_func, coef, k, param)
+checker_param = [coef, k]
+area_points_uni, border_points_uni = check_box(grid, size, V_ival,
+                                               classical_checker, interval_extencion,
+                                               checker_param, param)
 uni_plotter(area_points_uni, border_points_uni, L2u)
 

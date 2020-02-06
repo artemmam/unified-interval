@@ -1,4 +1,4 @@
-def unified_krav_eval(box, V, unified_krav_func, p = 10, param = [], coef = 1):
+def classical_checker(box, V, interval_extencion, checker_param, param = []):
     """
     Ckeck box with calculating Krawczyk evalutaion to check if it is the solution of the system, on the border of the
     solution or neigther of none of these.
@@ -12,18 +12,18 @@ def unified_krav_eval(box, V, unified_krav_func, p = 10, param = [], coef = 1):
              "border" if it is on the border of solution
              "outside" if it doesn't have intersection with solution
     """
+
     V_iter = V.copy()
     Vmid = []
-
     for i in range(len(V)):
-        Vmid.append(coef * V[i].mid())
+        Vmid.append(checker_param[0] * V[i].mid())
     param_iter = param.copy()
     param_iter += [box] + [Vmid]
-    for k in range(p):
+    for k in range(checker_param[1]):
         C = []
         for i in range(len(V_iter)):
             C.append(V_iter[i].mid())
-        v_krav = unified_krav_func(V_iter, C, param_iter)  # Calculate Kravchik evaluation for u1, u2
+        v_krav = interval_extencion(V_iter, C, param_iter)  # Calculate Kravchik evaluation for u1, u2
         check = True
         for i in range(len(V)):
             if not(v_krav[i][0].isIn(V[i])):
@@ -31,7 +31,7 @@ def unified_krav_eval(box, V, unified_krav_func, p = 10, param = [], coef = 1):
                 break
         if check:
             return 'inside'  # if it is inside previous interval, then it's inside the workspace area
-        if k == p - 1:
+        if k == checker_param[1] - 1:
             return 'border'  # if we achieve max of the iterations, then it's border
         for i in range(len(V)):
             if V[i].isNoIntersec(v_krav[i][0]):

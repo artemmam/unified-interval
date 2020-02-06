@@ -1,4 +1,4 @@
-from unified_krawczyk import unified_krav_eval
+from interval_checker import unified_krav_eval
 import interval as ival
 import numpy as np
 import sympy as sym
