@@ -5,6 +5,7 @@ from check_box import check_box
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter
 from kravchik_operator import krawczyk_eval
+from extension_calculator_class import Ext_calcul
 
 
 def func_1d():
@@ -33,22 +34,15 @@ V_ival = [v1]  # interval vector V
 L2u = 2  # the width of the of the 2-dimensional square
 param = []
 #unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C)
-unified_krav_func = krawczyk_eval(f, U, V, Vmid, C)
+interval_extension = krawczyk_eval(f, U, V, Vmid, C)
 #####
 
 k = 20  # Max number of iterations
 coef = 1.5  # Coefficient
-#coef_list = np.linspace(0.0, 5.0, num = 10)
 size = 2  # The dimension of uniform grid
 grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
-"""
-for c in coef_list:
-    print('***')
-    print('COEF = ', c)
-    area_points_uni, border_points_uni = check_box(grid, size, V_ival, unified_krav_eval, unified_krav_func, c, k, param)
-    uni_plotter(area_points_uni, border_points_uni, L2u)
-"""
-area_points_uni, border_points_uni = check_box(grid, size, V_ival, classical_checker, unified_krav_func, [coef, k], param)
+cont1 = Ext_calcul(interval_extension, coef, param)
+area_points_uni, border_points_uni = check_box(grid, size, V_ival, classical_checker, cont1, k)
 uni_plotter(area_points_uni, border_points_uni, L2u)
 
 

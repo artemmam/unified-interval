@@ -23,14 +23,15 @@ def make_boxes_list(grid, dim):
     return np.reshape(U, (grid_size ** dim, dim))
 
 
-def check_box(grid, dim, V, checker, cont1):
+def check_box(grid, dim, V, checker, ext_calcul, k=10):
     """
     Function for checking boxes on dim-dimensional uniform grid with checker method
     :param grid: 1-d grid
     :param dim: number of the dimensions
     :param V: vector of not fixed interval variables
     :param checker: interval method function for checking box
-    :param cont1: Container-class object, contains param info and calculate interval extension
+    :param ext_calcul: Extension calculator-class object, contains param info and calculate interval extension
+    :param k: max number of the iterations for checker
     :return: list of inside boxes, list of border boxes
     """
     area_boxes = []
@@ -39,8 +40,8 @@ def check_box(grid, dim, V, checker, cont1):
     grid_size = len(grid) - 1
     all_boxes = make_boxes_list(grid, dim)
     for i in range(grid_size**dim):
-        if checker(all_boxes[i], V, cont1) == 'inside': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'inside':
+        if checker(all_boxes[i], V, k, ext_calcul) == 'inside': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'inside':
             area_boxes.append(all_boxes[i])
-        elif checker(all_boxes[i], V, cont1) == 'border': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'border:
+        elif checker(all_boxes[i], V, k, ext_calcul) == 'border': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'border:
             border_boxes.append(all_boxes[i])
     return area_boxes, border_boxes

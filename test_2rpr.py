@@ -5,7 +5,7 @@ from check_box import check_box
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter
 from kravchik_operator import krawczyk_eval
-from container_class import Container
+from extension_calculator_class import Ext_calcul
 
 
 def func_2rpr():
@@ -48,9 +48,8 @@ coef = 1.5
 d = 6
 param = [d]
 checker_param = [coef, k]
-cont1 = Container(interval_extension, k, coef, param)
-print(cont1.iter_num, cont1.func, cont1.coef, cont1.param)
+ext_calcul1 = Ext_calcul(interval_extension, coef, param)
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-                                               classical_checker, cont1)
+                                               classical_checker, ext_calcul1, k)
 uni_plotter(area_points_uni, border_points_uni, L2u)
 
