@@ -2,9 +2,9 @@ import sympy as sym
 import  interval as ival
 import numpy as np
 from check_box import check_box
-from interval_checker import unified_krav_eval
+from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter
-from kravchik_operator import krawczyk_evalutation
+from kravchik_operator import krawczyk_eval
 
 
 def func_1d():
@@ -24,7 +24,7 @@ def func_1d():
     return f, U, V, Vmid, C
 
 
-N = 21  # The number of nodes on uniform grid
+N = 64 # The number of nodes on uniform grid
 
 ##### 1d circle
 f, U, V, Vmid, C = func_1d()
@@ -33,10 +33,10 @@ V_ival = [v1]  # interval vector V
 L2u = 2  # the width of the of the 2-dimensional square
 param = []
 #unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C)
-unified_krav_func = krawczyk_evalutation(f, U, V, Vmid, C)
+unified_krav_func = krawczyk_eval(f, U, V, Vmid, C)
 #####
 
-k = 10  # Max number of iterations
+k = 20  # Max number of iterations
 coef = 1.5  # Coefficient
 #coef_list = np.linspace(0.0, 5.0, num = 10)
 size = 2  # The dimension of uniform grid
@@ -48,7 +48,7 @@ for c in coef_list:
     area_points_uni, border_points_uni = check_box(grid, size, V_ival, unified_krav_eval, unified_krav_func, c, k, param)
     uni_plotter(area_points_uni, border_points_uni, L2u)
 """
-area_points_uni, border_points_uni = check_box(grid, size, V_ival, unified_krav_eval, unified_krav_func, coef, k, param)
+area_points_uni, border_points_uni = check_box(grid, size, V_ival, classical_checker, unified_krav_func, [coef, k], param)
 uni_plotter(area_points_uni, border_points_uni, L2u)
 
 

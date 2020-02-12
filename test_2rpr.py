@@ -4,7 +4,7 @@ import numpy as np
 from check_box import check_box
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter
-from kravchik_operator import krawczyk_evalutation
+from kravchik_operator import krawczyk_eval
 
 
 def func_2rpr():
@@ -28,7 +28,7 @@ def func_2rpr():
     return f, U, V, Vmid, C, param_sym
 
 
-N = 64  # The number of nodes on uniform grid
+N = 64 # The number of nodes on uniform grid
 ##### 2-RPR
 f, U, V, Vmid, C, param_sym = func_2rpr()
 L1v = 3  # Lower range of row
@@ -39,7 +39,7 @@ V_ival = [v1, v2]
 L2u = L2v   # the width of the 2-dimensional square
 
 #unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C, param_sym)
-interval_extencion = krawczyk_evalutation(f, U, V, Vmid, C, param_sym)
+interval_extension = krawczyk_eval(f, U, V, Vmid, C, param_sym)
 #####
 grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
@@ -49,7 +49,7 @@ d = 6
 param = [d]
 checker_param = [coef, k]
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-                                               classical_checker, interval_extencion,
+                                               classical_checker, interval_extension,
                                                checker_param, param)
 uni_plotter(area_points_uni, border_points_uni, L2u)
 

@@ -64,7 +64,6 @@ def centered_form(f, V, C, param = []):
     """
     Centered interval form
     :param f: old right-hand side
-    :param U: list of fixed intervals
     :param V: list of checking intervals
     :param C: point from interval V
     :param param: list of const parameters
@@ -82,18 +81,18 @@ def centered_form(f, V, C, param = []):
     for i in range(len(V)):
         subsv.append((V[i], C[i]))
     f = f.subs(subsv)
-    g_eval = f + g_v * v_c # Calculates classical central form
+    g_eval = f + g_v * v_c # Classical central form
     return sym.lambdify([V, C, param], g_eval)
 
 
-def krawczyk_evalutation(f, U, V, Vmid, C, param = []):
+def krawczyk_eval(f, U, V, Vmid, C, param = []):
 
     """
-    Krawczyk_evalutation function (centered form of the recurrent form of the system of the equatitons)
+    Krawczyk_evalutation function (centered form of the recurrent form of the system of the equations)
     :param f: old right-hand side
     :param U: list of fixed intervals
     :param V: list of checking intervals
-    :param Vmid: list of mids of the V
+    :param Vmid: list of mids of the V (to compute the recurrent form)
     :param C: list of point in V (mids in our case)
     :param param: list of parameters
     :return: function of centered form from recurrent form

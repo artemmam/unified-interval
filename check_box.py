@@ -30,10 +30,9 @@ def check_box(grid, dim, V, checker, interval_exten, checker_param, param=[]):
     :param dim: number of the dimensions
     :param V: vector of not fixed interval variables
     :param checker: interval method function for checking box
-    :param unified_krav_func: numerical function from symbolic format for calculating interval extension
-    :param coef: the coefficient
-    :param p: the max number of iterations
-    :param param: list of system parameters
+    :param interval_exten: numerical function from symbolic format for calculating interval extension
+    :param checker_param: parameters to pass to checker (intended for checker)
+    :param param: parameters to pass to checker (intended for interval_exten)
     :return: list of inside boxes, list of border boxes
     """
     area_boxes = []
