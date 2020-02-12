@@ -10,22 +10,11 @@ class Ext_calcul:
         self.__coef = coef
         self.__param = param
 
-    def calcul_ext(self, box, V):
+    def calculate_extension(self):
         """
         Function for calculation interval extension
-        :param box: box to check
-        :param V: variables for checking
-        :return: interval extension with method "func" for variables "V" on box "box"
         """
-        Vmid = []
-        for i in range(len(V)):
-            Vmid.append(self.__coef * V[i].mid())
-        param_iter = self.__param.copy()
-        param_iter += [box] + [Vmid]
-        C = []
-        for i in range(len(V)):
-            C.append(V[i].mid())
-        return self.__func(V, C, param_iter)
+        print("Not defined")
 
     @property
     def func(self):
@@ -40,19 +29,19 @@ class Ext_calcul:
         return self.__param
 
 class Classical_Krawczyk_calcul(Ext_calcul):
-    def calcul_ext(self, box, V):
+    def calculate_extension(self, box, V):
         """
-        Function for calculation interval extension
+        Function for calculation interval Krawczyk extension
         :param box: box to check
         :param V: variables for checking
         :return: interval extension with method "func" for variables "V" on box "box"
         """
         Vmid = []
         for i in range(len(V)):
-            Vmid.append(self.__coef * V[i].mid())
-        param_iter = self.__param.copy()
+            Vmid.append(self.coef * V[i].mid())
+        param_iter = self.param.copy()
         param_iter += [box] + [Vmid]
         C = []
         for i in range(len(V)):
             C.append(V[i].mid())
-        return self.__func(V, C, param_iter)
+        return self.func(V, C, param_iter)

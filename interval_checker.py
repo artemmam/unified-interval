@@ -1,6 +1,6 @@
 def classical_checker(box, V, iter_nums, ext_calcul):
     """
-    Ckeck box if it is the solution of the system, on the border of the
+    Check box if it is the solution of the system, on the border of the
     solution or there is no intersection with solution.
     :param box: box to check
     :param V: variables for checking
@@ -13,7 +13,7 @@ def classical_checker(box, V, iter_nums, ext_calcul):
 
     V_iter = V.copy()
     for k in range(iter_nums):
-        v_ext = ext_calcul.calcul_ext(box, V_iter)
+        v_ext = ext_calcul.calculate_extension(box, V_iter)
         check = True
         for i in range(len(V)):
             if not(v_ext[i][0].isIn(V_iter[i])):
