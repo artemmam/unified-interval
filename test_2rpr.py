@@ -5,6 +5,7 @@ from check_box import check_box
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter
 from kravchik_operator import krawczyk_eval
+from container_class import Container
 
 
 def func_2rpr():
@@ -38,7 +39,6 @@ v2 = ival.Interval([L1v, L2v])
 V_ival = [v1, v2]
 L2u = L2v   # the width of the 2-dimensional square
 
-#unified_krav_func = get_unified_krav_eval(f, U, V, Vmid, C, param_sym)
 interval_extension = krawczyk_eval(f, U, V, Vmid, C, param_sym)
 #####
 grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
@@ -48,6 +48,8 @@ coef = 1.5
 d = 6
 param = [d]
 checker_param = [coef, k]
+cont1 = Container(interval_extension, k, coef, param, checker_param)
+print(cont1.iter_num, cont1.func, cont1.checker_param, cont1.coef, cont1.param)
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, interval_extension,
                                                checker_param, param)

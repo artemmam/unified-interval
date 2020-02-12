@@ -29,8 +29,6 @@ class Interval:
 
 
     def intersec(self, other):
-        #self[0] = max(self.x[0], other.x[0])
-        #self[1] = min(self.x[1], other.x[1])
         if self.x[0] > self.x[1]:
             raise ValueError(other.x[0], other.x[1], "results in wrong bounds:", self.x[0], self.x[1])
         return Interval([max(self.x[0], other.x[0]), min(self.x[1], other.x[1])])
@@ -135,14 +133,12 @@ def valueToInterval(expr):
         etmp = expr
     return etmp
 
-#import numpy as np
 def sin(x):
     if isinstance(x, int):
         return math.sin(x)
     elif isinstance(x, float):
         return math.sin(x)
     else:
-    #    x = valueToInterval(x)
         y = [math.sin(x[0]), math.sin(x[1])]
         pi2 = 2 * math.pi
         pi05 = math.pi / 2
@@ -164,7 +160,6 @@ def cos(x):
     elif isinstance(x, float):
         return math.cos(x)
     else:
-    #x = valueToInterval(x)
         y = [math.cos(x[0]), math.cos(x[1])]
         pi2 = 2 * math.pi
         if math.ceil(x[0]/pi2) <= math.floor(x[1]/pi2):

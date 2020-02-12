@@ -1,7 +1,7 @@
 def classical_checker(box, V, interval_extension, checker_param, param = []):
     """
     Ckeck box if it is the solution of the system, on the border of the
-    solution or neither of none of these.
+    solution or there is no intersection with solution.
     :param box: box to check
     :param V: variables for checking
     :param interval_extension: function for calculating the interval extension
