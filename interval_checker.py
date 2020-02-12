@@ -1,28 +1,28 @@
-def classical_checker(box, V, interval_extension, checker_param, param = []):
+def classical_checker(box, V, container):
     """
     Ckeck box if it is the solution of the system, on the border of the
     solution or there is no intersection with solution.
     :param box: box to check
     :param V: variables for checking
-    :param interval_extension: function for calculating the interval extension
-    :param checker_param parameter for checker (p[0] - coefficient for the inverse point, p[1] - max number of iterations)
-    :param param: parameters for interval extension
+    :param container: Container-class object, contains param info and calculate interval extension
     :return: "inside" if it is the solution
              "border" if it is on the border of solution
              "outside" if it doesn't have intersection with solution
     """
 
     V_iter = V.copy()
-    for k in range(checker_param[1]):
-        Vmid = []
-        for i in range(len(V)):
-            Vmid.append(checker_param[0] * V_iter[i].mid())
-        param_iter = param.copy()
-        param_iter += [box] + [Vmid]
-        C = []
-        for i in range(len(V_iter)):
-            C.append(V_iter[i].mid())
-        v_ext = interval_extension(V_iter, C, param_iter)
+    for k in range(container.iter_num):
+        #container.calcul_all(box, V)
+        #Vmid = []
+        #for i in range(len(V)):
+        #    Vmid.append(checker_param[0] * V_iter[i].mid())
+       # param_iter = param.copy()
+        #param_iter += [box] + [Vmid]
+        #C = []
+        #for i in range(len(V_iter)):
+        #    C.append(V_iter[i].mid())
+        #v_ext = container.func(V_iter, container.C, container.param_iter)
+        v_ext = container.calcul_ext(box, V_iter)
         check = True
         for i in range(len(V)):
             if not(v_ext[i][0].isIn(V_iter[i])):

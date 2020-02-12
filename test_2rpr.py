@@ -48,10 +48,9 @@ coef = 1.5
 d = 6
 param = [d]
 checker_param = [coef, k]
-cont1 = Container(interval_extension, k, coef, param, checker_param)
-print(cont1.iter_num, cont1.func, cont1.checker_param, cont1.coef, cont1.param)
+cont1 = Container(interval_extension, k, coef, param)
+print(cont1.iter_num, cont1.func, cont1.coef, cont1.param)
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-                                               classical_checker, interval_extension,
-                                               checker_param, param)
+                                               classical_checker, cont1)
 uni_plotter(area_points_uni, border_points_uni, L2u)
 
