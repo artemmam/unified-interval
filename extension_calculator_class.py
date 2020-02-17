@@ -1,14 +1,12 @@
 class Ext_calcul:
 
-    def __init__(self, func, coef=1, param=[]):
+    def __init__(self, func, coef=1):
         """
         :param func: numerical interval extension function
         :param coef: coefficient for variating recurrent form
-        :param param: the list of params for interval extension function
         """
         self.__func = func
         self.__coef = coef
-        self.__param = param
 
     def calculate_extension(self):
         """
@@ -24,11 +22,8 @@ class Ext_calcul:
     def coef(self):
         return self.__coef
 
-    @property
-    def param(self):
-        return self.__param
 
-class Classical_Krawczyk_calcul(Ext_calcul):
+class Classical_krawczyk_calcul(Ext_calcul):
     def calculate_extension(self, box, V):
         """
         Function for calculation interval Krawczyk extension
@@ -39,9 +34,8 @@ class Classical_Krawczyk_calcul(Ext_calcul):
         Vmid = []
         for i in range(len(V)):
             Vmid.append(self.coef * V[i].mid())
-        param_iter = self.param.copy()
-        param_iter += [box] + [Vmid]
+        param = [box] + [Vmid]
         C = []
         for i in range(len(V)):
             C.append(V[i].mid())
-        return self.func(V, C, param_iter)
+        return self.func(V, C, param)

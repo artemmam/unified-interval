@@ -1,9 +1,9 @@
-def classical_checker(box, V, iter_nums, ext_calcul):
+def classical_checker(box, v_init, iter_nums, ext_calcul):
     """
     Check box if it is the solution of the system, on the border of the
     solution or there is no intersection with solution.
     :param box: box to check
-    :param V: variables for checking
+    :param v_init: variables for checking
     :param iter_nums: max number of the iterations
     :param ext_calcul: Extension calculator-class object, contains param info and calculate interval extension
     :return: "inside" if it is the solution
@@ -11,20 +11,24 @@ def classical_checker(box, V, iter_nums, ext_calcul):
              "outside" if it doesn't have intersection with solution
     """
 
-    V_iter = V.copy()
+    v_iter = v_init.copy()
+    n = len(v_init)
     for k in range(iter_nums):
-        v_ext = ext_calcul.calculate_extension(box, V_iter)
+        v_ext = ext_calcul.calculate_extension(box, v_iter)
         check = True
-        for i in range(len(V)):
-            if not(v_ext[i][0].isIn(V_iter[i])):
+        for i in range(n):
+            if not(v_ext[i][0].isIn(v_iter[i])):
                 check = False
                 break
         if check:
             return 'inside'  # if it is inside previous interval, then it's inside the workspace area
-        for i in range(len(V)):
-            if V_iter[i].isNoIntersec(v_ext[i][0]):
+        for i in range(n):
+            if v_iter[i].isNoIntersec(v_ext[i][0]):
                 return 'outside'
             else:
-                V_iter[i] = V_iter[i].intersec(v_ext[i][0])  # if our evalution not fully inside, then intersect it and repeat
+                v_iter[i] = v_iter[i].intersec(v_ext[i][0])  # if our evalution not fully inside, then intersect it and repeat
+                # v_iter[i] = v_init[i].intersec(v_ext[i][0])  # if our evalution not fully inside, then intersect it and repeat
+                # v_ext[i][0].scale(1.01)
+                # v_iter[i] = v_ext[i][0]  # if our evalution not fully inside, then intersect it and repeat
     return 'border'  # if we achieve max of the iterations, then it's border
 

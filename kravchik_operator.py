@@ -60,13 +60,13 @@ def recurrent_form(f, V, Vmid):
     return v - lam * f  # Equivalent recurrent transformation
 
 
-def centered_form(f, V, C, param = []):
+def centered_form(f, V, C, param):
     """
     Centered interval form
     :param f: old right-hand side
     :param V: list of checking intervals
     :param C: point from interval V
-    :param param: list of const parameters
+    :param param: parameters
     :return: function for calculating centered interval form
     """
     v = sym.Matrix()
@@ -85,7 +85,7 @@ def centered_form(f, V, C, param = []):
     return sym.lambdify([V, C, param], g_eval)
 
 
-def krawczyk_eval(f, U, V, Vmid, C, param = []):
+def krawczyk_eval(f, U, V, Vmid, C):
 
     """
     Krawczyk_evalutation function (centered form of the recurrent form of the system of the equations)
@@ -94,9 +94,8 @@ def krawczyk_eval(f, U, V, Vmid, C, param = []):
     :param V: list of checking intervals
     :param Vmid: list of mids of the V (to compute the recurrent form)
     :param C: list of point in V (mids in our case)
-    :param param: list of parameters
     :return: function of centered form from recurrent form
     """
-    param += [U] + [Vmid]
+    param = [U] + [Vmid]
     return centered_form(recurrent_form(f, V, Vmid), V, C, param)
 
