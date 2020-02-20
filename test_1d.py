@@ -26,10 +26,10 @@ def func_1d():
     return f, U, V, Vmid, C
 
 
-N = 64  # The number of boxes on uniform grid
+N = 20  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V, Vmid, C = func_1d()
-v1 = ival.Interval([0,1.2])  # Set the interval for v1
+v1 = ival.Interval([0, 1.2])  # Set the interval for v1
 V_ival = [v1]  # interval vector V
 L2u = 2  # the width of the of the 2-dimensional square
 
@@ -39,7 +39,7 @@ grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 # grid = np.linspace(0, 0.5, 2)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 k = 10  # Max number of iterations
-coef = 1.0  # Coefficient
+coef = 1.5  # Coefficient
 
 ext_calcul = ClassicalKrawczykCalcul(interval_extension, coef)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)

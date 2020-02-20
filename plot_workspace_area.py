@@ -24,12 +24,12 @@ def uni_plotter(area_points, border_points, L2, title):
         rect1 = Rectangle([area_points[i][0][0], area_points[i][1][0]],
                           area_points[i][0][1] - area_points[i][0][0],
                           area_points[i][1][1] - area_points[i][1][0],
-                          fill=True, fc='yellow', color='black', linewidth=1.0, alpha=1)
+                          fill=True, fc='green', color='black', linewidth=1.0, alpha=1)
         ax.add_patch(rect1)
     for i in range(len(border_points)):  # Plot rectangles, which compose the border of workspace area
         rect2 = Rectangle([border_points[i][0][0], border_points[i][1][0]],
                           border_points[i][0][1] - border_points[i][0][0],
                           border_points[i][1][1] - border_points[i][1][0],
-                          fill=True, fc='green', color='black', linewidth=1.0, alpha=1)
+                          fill=True, fc='yellow', color='black', linewidth=1.0, alpha=1)
         ax.add_patch(rect2)
     ax.set_title(title)
