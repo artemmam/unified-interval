@@ -60,6 +60,20 @@ def recurrent_form(f, V, Vmid):
     return v - lam * f  # Equivalent recurrent transformation
 
 
+def derived_reccurent_form(f, V, U, Vmid):
+    """
+    Produce derived recurrent function
+    :param f: old right-hand side
+    :param V: list of checking intervals
+    :param U: list of fixed intervals
+    :param Vmid: list of V middles
+    :return: function of derived recurrent form
+    """
+    param = [U] + [Vmid]
+    g = derive_matrix(recurrent_form(f, V, Vmid), V)
+    return sym.lambdify([V, param], g)
+
+
 def centered_form(f, V, C, param):
     """
     Centered interval form

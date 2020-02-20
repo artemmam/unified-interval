@@ -4,10 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from check_box import check_box
-from interval_checker import classical_checker
+from interval_checker import classical_checker, bicentered_checker
 from plot_workspace_area import uni_plotter
-from kravchik_operator import krawczyk_eval
-from extension_calculator_class import Classical_krawczyk_calcul
+from kravchik_operator import krawczyk_eval, derived_reccurent_form
+from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
 
 def func_1d():
     """
@@ -26,7 +26,7 @@ def func_1d():
     return f, U, V, Vmid, C
 
 
-N = 16 # The number of boxes on uniform grid
+N = 64  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V, Vmid, C = func_1d()
 v1 = ival.Interval([0,1.2])  # Set the interval for v1
@@ -34,16 +34,24 @@ V_ival = [v1]  # interval vector V
 L2u = 2  # the width of the of the 2-dimensional square
 
 interval_extension = krawczyk_eval(f, U, V, Vmid, C)
+derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 # grid = np.linspace(0, 0.5, 2)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 k = 10  # Max number of iterations
-coef = 1. # Coefficient
+coef = 1.0  # Coefficient
 
-ext_calcul = Classical_krawczyk_calcul(interval_extension, coef)
-area_points_uni, border_points_uni = check_box(grid, size, V_ival, classical_checker, ext_calcul, k)
-uni_plotter(area_points_uni, border_points_uni, L2u)
-circle = plt.Circle((0, 0), radius=1, fc='y', fill = False)
+ext_calcul = ClassicalKrawczykCalcul(interval_extension, coef)
+ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
+area_points_uni, border_points_uni = check_box(grid, size, V_ival,
+                                               classical_checker, ext_calcul, k)
+area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
+                                               bicentered_checker, ext_calcul_bicentered, k)
+uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
+circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+plt.gca().add_patch(circle)
+uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
+circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 plt.gca().add_patch(circle)
 plt.show()
 
