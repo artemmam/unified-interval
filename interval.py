@@ -181,7 +181,6 @@ def exp(x):
     return Interval([math.exp(x[0]), math.exp(x[1])])
 
 def abs(x):
-    #print(x.shape)
     if x[1] < 0:
         return Interval([-x[0], -x[1]])
     elif x[0] < 0 and x[1] > 0:

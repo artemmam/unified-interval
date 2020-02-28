@@ -10,9 +10,6 @@ from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawcz
 from interval_checker import S_bic, S_class
 
 
-
-
-
 def func_2rpr(d):
     """
     Creating symbol variables for 2-RPR eq. system
@@ -32,12 +29,12 @@ def func_2rpr(d):
     return f, U, V, Vmid, C
 
 
-N = 30  # The number of nodes on uniform grid
+N = 10  # The number of nodes on uniform grid
 ##### 2-RPR
 
 L1v = 3  # Lower range of row
 L2v = 15  # Upper range of row
-d = 8 # Distance between actuators
+d = 8  # Distance between actuators
 v1 = ival.Interval([L1v, L2v])
 v2 = ival.Interval([L1v, L2v])
 V_ival = [v1, v2]
@@ -52,14 +49,41 @@ k = 1e-6  # error
 coef = 1.5
 ext_calcul = ClassicalKrawczykCalcul(interval_extension, coef)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
-area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-                                               classical_checker, ext_calcul, k)
-area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
-                                               bicentered_checker, ext_calcul_bicentered, k)
-
-uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
-uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
-plot_dist(S_class, "Classical Krawczyk")
-plot_dist(S_bic, "Bicentered Krawczyk")
+#area_points_uni, border_points_uni = check_box(grid, size, V_ival,
+#                                               classical_checker, ext_calcul, k)
+#area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
+#                                               bicentered_checker, ext_calcul_bicentered, k)
+coef_arr = np.linspace(0, 5, 20)
+grid_size = [10, 20, 30, 40, 50, 60]
+pdf = []
+pdf_b = []
+for i in grid_size:
+    for j in coef_arr:
+        grid = np.linspace(-L2u, L2u, i)
+        ext_calcul = ClassicalKrawczykCalcul(interval_extension, j)
+        area_points_uni, border_points_uni = check_box(grid, size, V_ival,
+                                                       classical_checker, ext_calcul, k)
+        ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
+        area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
+                                                       bicentered_checker, ext_calcul_bicentered, k)
+        #print("KRAWCZYK/")
+        #print("GRID SIZE", i)
+        #print("COEFF", j)
+        #print("App. ex", len(area_points_uni)/i**2)
+        pdf.append(len(area_points_uni))
+        pdf_b.append(len(area_points_uni_bicen))
+pdf = np.array(pdf).reshape(len(grid_size), len(coef_arr)).T
+pdf_b = np.array(pdf_b).reshape(len(grid_size), len(coef_arr)).T
+#print("Classical Krawczyk")
+#print(np.array(pdf).reshape(3, 10).T)
+#print("Bicentered Krawczyk")
+#print(np.array(pdf_b).reshape(3, 10).T)
+for i in range(len(grid_size)):
+    print("Classical Krawczyk", pdf[::, i])
+    print("Bicentered Krawczyk", pdf_b[::, i])
+#uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
+#uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
+#plot_dist(S_class, "Classical Krawczyk")
+#plot_dist(S_bic, "Bicentered Krawczyk")
 plt.show()
 

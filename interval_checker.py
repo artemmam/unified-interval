@@ -41,9 +41,6 @@ def classical_checker(box, v_init, eps, ext_calcul):
                 return 'outside'
             else:
                 v_iter[i] = v_iter[i].intersec(v_ext[i])  # if our evalution not fully inside, then intersect it and repeat
-                # v_iter[i] = v_init[i].intersec(v_ext[i][0])  # if our evalution not fully inside, then intersect it and repeat
-                # v_ext[i][0].scale(1.01)
-                # v_iter[i] = v_ext[i][0]  # if our evalution not fully inside, then intersect it and repeat
     return 'border'  # if we achieve max of the iterations, then it's border
 
 
@@ -88,9 +85,6 @@ def bicentered_checker(box, v_init, eps, ext_calcul):
                 return 'outside'
             else:
                 v_iter[i] = v_iter[i].intersec(v_bic[i])  # if our evalution not fully inside, then intersect it and repeat
-                # v_iter[i] = v_init[i].intersec(v_ext[i][0])  # if our evalution not fully inside, then intersect it and repeat
-                # v_ext[i][0].scale(1.01)
-                # v_iter[i] = v_ext[i][0]  # if our evalution not fully inside, then intersect it and repeat
     return 'border'  # if we achieve max of the iterations, then it's border
 
 

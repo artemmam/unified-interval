@@ -1,8 +1,7 @@
 import sympy as sym
-import  interval as ival
+import interval as ival
 import numpy as np
 import matplotlib.pyplot as plt
-
 from check_box import check_box
 from interval_checker import classical_checker, bicentered_checker
 from plot_workspace_area import uni_plotter, plot_dist
@@ -28,7 +27,7 @@ def func_1d():
     return f, U, V, Vmid, C
 
 
-N = 30  # The number of boxes on uniform grid
+N = 10  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V, Vmid, C = func_1d()
 v1 = ival.Interval([0, 1.2])  # Set the interval for v1
@@ -38,7 +37,6 @@ L2u = 2  # the width of the of the 2-dimensional square
 interval_extension = krawczyk_eval(f, U, V, Vmid, C)
 derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
-# grid = np.linspace(0, 0.5, 2)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 k = 1e-6  # error
 coef = 1.5  # Coefficient
