@@ -38,7 +38,7 @@ derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 # grid = np.linspace(0, 0.5, 2)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
-k = 10  # Max number of iterations
+k = 1e-6  # Max number of iterations
 coef = 1.5  # Coefficient
 
 ext_calcul = ClassicalKrawczykCalcul(interval_extension, coef)

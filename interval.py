@@ -12,6 +12,9 @@ class Interval:
     def mid(self):
         return 0.5 * (self.x[0] + self.x[1])
 
+    def width(self):
+        return self.x[1] - self.x[0]
+
 
     def scale(self, factor):
         m = 0.5 * (self.x[0] + self.x[1])
@@ -61,6 +64,7 @@ class Interval:
         ninterval.x[0] = self.x[0] - ointerval.x[1]
         ninterval.x[1] = self.x[1] - ointerval.x[0]
         return ninterval
+
 
     def __rsub__(self, other):
         ointerval = valueToInterval(other)
@@ -176,9 +180,22 @@ def cos(x):
 def exp(x):
     return Interval([math.exp(x[0]), math.exp(x[1])])
 
+def abs(x):
+    #print(x.shape)
+    if x[1] < 0:
+        return Interval([-x[0], -x[1]])
+    elif x[0] < 0 and x[1] > 0:
+        if -x[0] > x[1]:
+            return Interval([x[1], -x[0]])
+        else:
+            return Interval([-x[0], x[1]])
+    else:
+        return Interval([x[0], x[1]])
+
 
 def log(x, base):
     if base > 1:
         return Interval([math.log(x[0], base), math.log(x[1], base)])
     else:
         return Interval([math.log(x[1], base), math.log(x[0], base)])
+

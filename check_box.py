@@ -40,8 +40,9 @@ def check_box(grid, dim, V, checker, ext_calcul, k=10):
     grid_size = len(grid) - 1
     all_boxes = make_boxes_list(grid, dim)
     for i in range(grid_size**dim):
-        if checker(all_boxes[i], V, k, ext_calcul) == 'inside': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'inside':
+        temp = checker(all_boxes[i], V, k, ext_calcul)
+        if temp == 'inside': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'inside':
             area_boxes.append(all_boxes[i])
-        elif checker(all_boxes[i], V, k, ext_calcul) == 'border': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'border:
+        elif temp == 'border': #or boundary_krav_eval(u1, u2, n, l1, l2, d, p) == 'border:
             border_boxes.append(all_boxes[i])
     return area_boxes, border_boxes

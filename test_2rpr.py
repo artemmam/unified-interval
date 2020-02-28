@@ -28,7 +28,7 @@ def func_2rpr(d):
     return f, U, V, Vmid, C
 
 
-N = 12  # The number of nodes on uniform grid
+N = 20  # The number of nodes on uniform grid
 ##### 2-RPR
 
 L1v = 3  # Lower range of row
@@ -44,7 +44,7 @@ interval_extension = krawczyk_eval(f, U, V, Vmid, C)
 derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
-k = 10  # Max number of iterations
+k = 1e-6  # Max number of iterations
 coef = 1.5
 ext_calcul = ClassicalKrawczykCalcul(interval_extension, coef)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
