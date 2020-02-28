@@ -4,9 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from check_box import check_box
 from interval_checker import classical_checker, bicentered_checker
-from plot_workspace_area import uni_plotter
+from plot_workspace_area import uni_plotter, plot_dist
 from kravchik_operator import krawczyk_eval, derived_reccurent_form
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
+from interval_checker import S_bic, S_class
+
+
+
 
 
 def func_2rpr(d):
@@ -28,7 +32,7 @@ def func_2rpr(d):
     return f, U, V, Vmid, C
 
 
-N = 20  # The number of nodes on uniform grid
+N = 30  # The number of nodes on uniform grid
 ##### 2-RPR
 
 L1v = 3  # Lower range of row
@@ -44,7 +48,7 @@ interval_extension = krawczyk_eval(f, U, V, Vmid, C)
 derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
-k = 1e-6  # Max number of iterations
+k = 1e-6  # error
 coef = 1.5
 ext_calcul = ClassicalKrawczykCalcul(interval_extension, coef)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
@@ -52,7 +56,10 @@ area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, k)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
                                                bicentered_checker, ext_calcul_bicentered, k)
+
 uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
+plot_dist(S_class, "Classical Krawczyk")
+plot_dist(S_bic, "Bicentered Krawczyk")
 plt.show()
 

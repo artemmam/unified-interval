@@ -1,5 +1,7 @@
 import numpy as np
 from interval import Interval
+S_class = []
+S_bic = []
 
 def classical_checker(box, v_init, eps, ext_calcul):
     """
@@ -7,33 +9,24 @@ def classical_checker(box, v_init, eps, ext_calcul):
     solution or there is no intersection with solution.
     :param box: box to check
     :param v_init: variables for checking
-    :param iter_nums: max number of the iterations
+    :param eps: error
     :param ext_calcul: Extension calculator-class object, contains param info and calculate interval extension
     :return: "inside" if it is the solution
              "border" if it is on the border of solution
              "outside" if it doesn't have intersection with solution
     """
-
     v_iter = v_init.copy()
     n = len(v_init)
-    #print(v_init)
-    #print(v_ext.reshape(-1))
-    #print(v_ext.reshape(-1) - v_init)
-
     ch = True
-    #print(abs(A))
-    #v_ext =
-    #print(v_ext[1][0])
-    #print((np.array(v_ext[0]) - np.array(v_iter)))
-    #print(np.squeeze(np.array(v_ext) - np.array(v_iter)).reshape(1))
-    #[print(i) for i in (np.array(v_ext) - np.array(v_iter))[0]]
-    #print([i for i in ((np.array(v_ext) - np.array(v_iter))[0])])
     v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1) + Interval([0, 1])
+    s = 0
     while ch:
+        s += 1
         v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
         for i in range(n):
             if abs(v_ext[i].width() - v_prev[i].width()) < eps:
                 ch = False
+                S_class.append(s)
                 break
         v_prev = v_ext
         check = True
@@ -60,7 +53,7 @@ def bicentered_checker(box, v_init, eps, ext_calcul):
     solution or there is no intersection with solution.
     :param box: box to check
     :param v_init: variables for checking
-    :param iter_nums: max number of the iterations
+    :param eps: error
     :param ext_calcul: Extension calculator-class object, contains param info and calculate interval extension
     :return: "inside" if it is the solution
              "border" if it is on the border of solution
@@ -70,8 +63,9 @@ def bicentered_checker(box, v_init, eps, ext_calcul):
     n = len(v_init)
     v_prev = np.full((2, 1), Interval([0, 1])).reshape(-1)
     ch = True
+    s = 0
     while ch:
-        #v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
+        s += 1
         v_ext_min, v_ext_max = ext_calcul.calculate_extension(box, v_iter)
         check = True
         v_bic = []
@@ -80,6 +74,7 @@ def bicentered_checker(box, v_init, eps, ext_calcul):
         for i in range(n):
             if abs(v_bic[i].width() - v_prev[i].width()) < eps:
                 ch = False
+                S_bic.append(s)
                 break
         v_prev = v_bic
         for i in range(n):
