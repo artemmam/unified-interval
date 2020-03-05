@@ -27,7 +27,7 @@ def func_1d():
     return f, U, V, Vmid, C
 
 
-N = 10  # The number of boxes on uniform grid
+N = 60  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V, Vmid, C = func_1d()
 v1 = ival.Interval([0, 1.2])  # Set the interval for v1
