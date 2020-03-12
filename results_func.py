@@ -20,6 +20,7 @@ def plot_dist(S1, S2):
     ax = sns.distplot(S1, label="Classical Krawczyk", bins=nbins_class)
     ax = sns.distplot(S2, label="Bicentred Krawczyk", bins=nbins_bic)
     ax.legend(loc="upper right")
+    ax.set_xlim(left=min(min(S1), min(S2)) - 1, right=max(max(S1), max(S2)) + 1)
 
 def time_calcul(checker, ext_calcul, grid_size, L2u, size, V_ival, k):
     """
