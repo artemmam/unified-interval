@@ -1,27 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-from matplotlib.offsetbox import AnchoredText
-import seaborn as sns
-import numpy as np
 
-def plot_dist(S, title):
-    """
-    Function for plotting the distribution of the number of the iterations
-    :param S: array of numbers of the iterations
-    :param title: method title
-    """
-    S = np.array(S)
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
-    ax.set_title(title)
-    anchored_text = AnchoredText("mean = %.4f\n"
-                                 "std  = %.4f\n"
-                                 "max  = %.4f\n"
-                                 "min  = %.4f\n"
-                                 "median  = %.4f"
-                                 % (S.mean(), S.std(), S.max(),
-                                    S.min(), np.median(S)), loc='upper right')
-    ax.add_artist(anchored_text)
-    ax = sns.distplot(S)
 
 def uni_plotter(area_points, border_points, L2, title):
     """
