@@ -80,7 +80,7 @@ def coef_test(L2u, CalculClass, interval_extension, V_ival, k, name, checker, de
     pdf = []
     for i in grid_size:
         for j in coef_arr:
-            grid = np.linspace(-L2u, L2u, i)
+            grid = np.linspace(-L2u, L2u, i+1)
             if derived_reccurent_form == 0:
                 ext_calcul = CalculClass(interval_extension, j)
             else:

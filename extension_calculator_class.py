@@ -1,3 +1,5 @@
+import numpy as np
+
 class ExtCalcul:
 
     def __init__(self, func, coef=1):
@@ -44,7 +46,7 @@ class ClassicalKrawczykCalcul(ExtCalcul):
 
 class BicenteredKrawczykCalcul(ExtCalcul):
 
-    def __init__(self, func, g, coef=1):
+    def __init__(self, func, g, coef = 1):
         """
         :param func: numerical interval extension function
         :param g: numerical interval extension for derived recurrent form
@@ -83,6 +85,7 @@ class BicenteredKrawczykCalcul(ExtCalcul):
             else:
                 c_min[i] = (new_v[i][1] * V[i][0] - new_v[i][0] * V[i][1]) / (new_v[i][1] - new_v[i][0])
         for i in range(n):
+
             if new_v[i][1] <= 0:
                 c_max[i] = V[i][0]
             elif new_v[i][0] >= 0:
@@ -103,4 +106,8 @@ class BicenteredKrawczykCalcul(ExtCalcul):
             Vmid.append(self.coef * V[i].mid())
         param = [box] + [Vmid]
         C_min, C_max = self.calcul_new_c(V, Vmid, box)
-        return self.func(V, C_min, param), self.func(V, C_max, param)
+        v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
+        v_bic = []
+        for i in range(len(V)):
+            v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
+        return np.array(v_bic).T

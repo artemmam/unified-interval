@@ -1,13 +1,10 @@
 import sympy as sym
 import interval as ival
-import numpy as np
-import matplotlib.pyplot as plt
-from check_box import check_box
-from interval_checker import classical_checker, bicentered_checker
-from plot_workspace_area import uni_plotter
+from interval_checker import classical_checker
+from plot_workspace_area import uni_plotter, iter_plot
 from kravchik_operator import krawczyk_eval, derived_reccurent_form
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
-from interval_checker import S_bic, S_class
+from interval_checker import S_class
 from results_func import *
 
 
@@ -28,7 +25,7 @@ def func_1d():
     return f, U, V, Vmid, C
 
 
-N = 20  # The number of boxes on uniform grid
+N = 10  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V, Vmid, C = func_1d()
 v1 = ival.Interval([0, 1.2])  # Set the interval for v1
@@ -48,15 +45,15 @@ ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_rec
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, k)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
-                                               bicentered_checker, ext_calcul_bicentered, k)
-"""
+                                               classical_checker, ext_calcul_bicentered, k)
+
 uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 plt.gca().add_patch(circle)
 uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
 circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 plt.gca().add_patch(circle)
-"""
+
 grid_size = [10, 20, 30, 40, 50, 60]
 
 # Precalculated times to decrease execution time
@@ -78,8 +75,8 @@ bic_time_mean = time_calcul(bicentered_checker, ext_calcul_bicentered, grid_size
 print(classical_time_mean)
 print(bic_time_mean)
 """
-plot_time(grid_size, classical_time_mean, bic_time_mean)
-plot_dist(S_class, S_bic)
+#plot_time(grid_size, classical_time_mean, bic_time_mean)
+iter_plot(np.array(S_class), N)
 plt.show()
 
 
