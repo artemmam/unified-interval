@@ -1,13 +1,18 @@
 import numpy as np
-
+from kravchik_operator import krawczyk_eval
+import sympy as sym
 class ExtCalcul:
 
-    def __init__(self, func, coef=1):
+    def __init__(self, f, u, v, coef=1):
         """
-        :param func: numerical interval extension function
+        :param f: system of equations
+        :param u: box to check
+        :param v: variables for checking
         :param coef: coefficient for variating recurrent form
         """
-        self.__func = func
+        self.__f = f
+        self.__u = u
+        self.__v = v
         self.__coef = coef
 
     def calculate_extension(self):
@@ -17,15 +22,43 @@ class ExtCalcul:
         print("Not defined")
 
     @property
-    def func(self):
-        return self.__func
+    def f(self):
+        return self.__f
+
+    @property
+    def v(self):
+        return self.__v
+
+    @property
+    def u(self):
+        return self.__u
 
     @property
     def coef(self):
         return self.__coef
 
-
 class ClassicalKrawczykCalcul(ExtCalcul):
+    def __init__(self, f, u, v, coef=1):
+        """
+        :param f: system of equations
+        :param u: box to check
+        :param v: variables for checking
+        :param coef: coefficient for variating recurrent form
+        """
+        super().__init__(f, u, v, coef)
+        self.__func = self.func_calcul()
+
+    def func_calcul(self):
+        """
+        Function for initializing Krawczyk evaluation
+        :return: Krawczyk operator evaluation
+        """
+        Vmid = []
+        C = []
+        for i in range(len(self.v)):
+            Vmid.append(sym.symbols("v" + str(i) + "mid"))
+            C.append(sym.symbols("c" + str(i)))
+        return krawczyk_eval(self.f, self.u, self.v, Vmid, C)
 
     def calculate_extension(self, box, V):
         """
@@ -41,7 +74,7 @@ class ClassicalKrawczykCalcul(ExtCalcul):
         C = []
         for i in range(len(V)):
             C.append(V[i].mid())
-        return self.func(V, C, param)
+        return np.array(self.__func(V, C, param))
 
 
 class BicenteredKrawczykCalcul(ExtCalcul):
