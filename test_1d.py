@@ -36,16 +36,16 @@ interval_extension = krawczyk_eval(f, U, V, Vmid, C)
 derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
-k = 1e-6  # error
+eps = 1e-3  # accuracy
 coef = 1.5  # Coefficient
 
 ext_calcul = ClassicalKrawczykCalcul(interval_extension, coef)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
 
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-                                               classical_checker, ext_calcul, k)
+                                               classical_checker, ext_calcul, eps)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
-                                               classical_checker, ext_calcul_bicentered, k)
+                                               classical_checker, ext_calcul_bicentered, eps)
 
 uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)

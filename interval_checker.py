@@ -15,7 +15,7 @@ def classical_checker(box, v_init, eps, ext_calcul):
     solution or there is no intersection with solution.
     :param box: box to check
     :param v_init: variables for checking
-    :param eps: error
+    :param eps: accuracy
     :param ext_calcul: Extension calculator-class object, contains param info and calculate interval extension
     :return: "inside" if it is the solution
              "border" if it is on the border of solution
@@ -29,10 +29,9 @@ def classical_checker(box, v_init, eps, ext_calcul):
     while ch:
         s += 1
         v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
-        for i in range(n):
-            if abs(diam(v_ext) - diam(v_prev)) < eps:
-                ch = False
-                break
+        if abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))) < eps:
+            ch = False
+            break
         v_prev = v_ext
         check = True
         for i in range(n):
