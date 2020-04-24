@@ -1,6 +1,7 @@
 import numpy as np
-from kravchik_operator import krawczyk_eval
+from kravchik_operator import krawczyk_eval, derived_F
 import sympy as sym
+import interval as ival
 class ExtCalcul:
 
     def __init__(self, f, u, v, coef=1):
@@ -38,6 +39,30 @@ class ExtCalcul:
         return self.__coef
 
 class ClassicalKrawczykCalcul(ExtCalcul):
+    def calculate_lam(self, V, U):
+        """
+        Produces the right-hand side of the equivalent recurrent form for the equation f(v) = 0
+        :param f: old right-hand side
+        :param V: variables
+        :param Vmid: variables for a middle point
+        :return: the recurrent right-hand side v - L(vmid)^(-1) * f(v)
+        """
+        param = [U]
+        FV = self.__fv(V, param)
+        M = np.zeros_like(FV)
+        for i in range(len(FV)):
+            for j in range(len(FV)):
+                M[i, j] = ival.valueToInterval(FV[i, j]).mid()
+        M = M.astype(float)
+        if M!=0:
+            return np.linalg.inv(M)
+        else:
+            print("V", V)
+            print(FV)
+            print(M)
+            return M
+
+
     def __init__(self, f, u, v, coef=1):
         """
         :param f: system of equations
@@ -47,6 +72,7 @@ class ClassicalKrawczykCalcul(ExtCalcul):
         """
         super().__init__(f, u, v, coef)
         self.__func = self.func_calcul()
+        self.__fv = derived_F(self.f, self.v, self.u)
 
     def func_calcul(self):
         """
@@ -55,10 +81,13 @@ class ClassicalKrawczykCalcul(ExtCalcul):
         """
         Vmid = []
         C = []
+        lam = []
         for i in range(len(self.v)):
             Vmid.append(sym.symbols("v" + str(i) + "mid"))
             C.append(sym.symbols("c" + str(i)))
-        return krawczyk_eval(self.f, self.u, self.v, Vmid, C)
+            for j in range(len(self.v)):
+                lam.append(sym.symbols("lam" + str(i) + str(j)))
+        return krawczyk_eval(self.f, self.u, self.v, lam, C)
 
     def calculate_extension(self, box, V):
         """
@@ -67,10 +96,9 @@ class ClassicalKrawczykCalcul(ExtCalcul):
         :param V: variables for checking
         :return: interval extension with method "func" for variables "V" on box "box"
         """
-        Vmid = []
-        for i in range(len(V)):
-            Vmid.append(self.coef * V[i].mid())
-        param = [box] + [Vmid]
+        L = self.calculate_lam(V, box)
+        L = L.reshape(len(V)*len(V))
+        param = [box] + [L]
         C = []
         for i in range(len(V)):
             C.append(V[i].mid())

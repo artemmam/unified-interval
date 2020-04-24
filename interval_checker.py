@@ -27,8 +27,11 @@ def classical_checker(box, v_init, eps, ext_calcul):
     v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1) + Interval([0, 1])
     s = 0
     while ch:
+        print(s)
+        print(v_iter)
         s += 1
         v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
+        print(v_ext)
         if abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))) < eps:
             ch = False
             break
