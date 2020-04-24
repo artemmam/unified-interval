@@ -49,6 +49,7 @@ def derived_F(f, V, U):
     """
     param = [U]
     fv = derive_matrix(f, V)
+    print(fv)
     return sym.lambdify([V, param], fv)
 
 
@@ -64,6 +65,7 @@ def recurrent_form(f, V, lam):
     for i in range(len(V)):
         v = v.row_insert(i, sym.Matrix([V[i]]))
     lam = sym.Matrix([lam]).reshape(len(V), len(V))
+    print(v - lam * f)
     return v - lam * f  # Equivalent recurrent transformation
 
 

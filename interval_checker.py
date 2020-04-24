@@ -26,6 +26,7 @@ def classical_checker(box, v_init, eps, ext_calcul):
     ch = True
     v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1) + Interval([0, 1])
     s = 0
+    print("box", box)
     while ch:
         print(s)
         print(v_iter)
