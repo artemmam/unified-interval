@@ -41,11 +41,11 @@ def derive_matrix(g, v):
 
 def derived_f(f, v, u):
     """
-    Produce numerical derived recurrent function
+    Produce numerical derived function
     :param f: old right-hand side
     :param v: list of checking intervals
     :param u: list of fixed intervals
-    :return: function of numerical derived recurrent form
+    :return: function of numerical derived form
     """
     param = [u]
     fv = derive_matrix(f, v)
@@ -114,7 +114,7 @@ def krawczyk_eval(f, u, v, l, c):
     :param u: list of fixed intervals
     :param v: list of checking intervals
     :param l: lamda matrix
-    :param c: list of point in v
+    :param c: list of points in v
     :return: function of centered form from recurrent form
     """
     param = [u] + [l]

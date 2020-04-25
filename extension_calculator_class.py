@@ -11,7 +11,7 @@ class ExtCalcul:
         :param f: system of equations
         :param u: box to check
         :param v: variables for checking
-        :param coef: coefficient for variating recurrent form
+        :param coef: coefficient for varying lambda matrix
         """
         self.__f = f
         self.__u = u
@@ -52,7 +52,7 @@ class ExtCalcul:
 
     def func_calcul(self):
         """
-        Function for transformation symbolic function into numeric
+        Function for transformation symbolic Krawczyk operator function into numeric
         :return: numeric Krawczyk operator calculation function
         """
         c = []
