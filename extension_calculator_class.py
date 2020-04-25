@@ -54,12 +54,7 @@ class ClassicalKrawczykCalcul(ExtCalcul):
             for j in range(len(FV)):
                 M[i, j] = ival.valueToInterval(FV[i, j]).mid()
         M = M.astype(float)
-        print(M)
-        print(np.linalg.inv(M))
-        if len(M) != 0:
-            return np.linalg.inv(M)
-        else:
-            return np.reciprocal(M)
+        return np.linalg.inv(M)
 
 
     def __init__(self, f, u, v, coef=1):

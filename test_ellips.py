@@ -25,10 +25,10 @@ def func_ellips():
     return f, U, V
 
 
-N = 13  # The number of boxes on uniform grid
+N = 30  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_ellips()
-v1 = ival.Interval([0, 1.5])  # Set the interval for v1
+v1 = ival.Interval([0.1, 1.5])  # Set the interval for v1
 V_ival = [v1]  # interval vector V
 L2u = max(a, b)  # the width of the of the 2-dimensional square
 

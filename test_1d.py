@@ -26,7 +26,7 @@ def func_1d():
 N = 10  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_1d()
-v1 = ival.Interval([0, 1.2])  # Set the interval for v1
+v1 = ival.Interval([0.1, 1.2])  # Set the interval for v1
 V_ival = [v1]  # interval vector V
 L2u = 2  # the width of the of the 2-dimensional square
 
@@ -34,7 +34,7 @@ L2u = 2  # the width of the of the 2-dimensional square
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 eps = 1e-3  # accuracy
-coef = 1.5  # Coefficient
+coef = 1  # Coefficient
 
 ext_calcul = ClassicalKrawczykCalcul(f, U, V, coef)
 #ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
