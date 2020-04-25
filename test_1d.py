@@ -2,7 +2,6 @@ import sympy as sym
 import interval as ival
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter, iter_plot
-from kravchik_operator import krawczyk_eval, derived_reccurent_form
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
 from interval_checker import S_class
 from results_func import *
@@ -23,7 +22,7 @@ def func_1d():
     return f, U, V
 
 
-N = 10  # The number of boxes on uniform grid
+N = 50  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_1d()
 v1 = ival.Interval([0.1, 1.2])  # Set the interval for v1
@@ -34,22 +33,22 @@ L2u = 2  # the width of the of the 2-dimensional square
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 eps = 1e-3  # accuracy
-coef = 1  # Coefficient
+coef = 1.5  # Coefficient
 
-ext_calcul = ClassicalKrawczykCalcul(f, U, V, coef)
-#ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
+ext_calcul = ClassicalKrawczykCalcul(f, U, V)
+ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, eps)
-#area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
-#                                               classical_checker, ext_calcul_bicentered, eps)
+area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
+                                               classical_checker, ext_calcul_bicentered, eps)
 
 uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 plt.gca().add_patch(circle)
-#uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
-#circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
-#plt.gca().add_patch(circle)
+uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
+circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+plt.gca().add_patch(circle)
 
 grid_size = [10, 20, 30, 40, 50, 60]
 
@@ -73,7 +72,7 @@ print(classical_time_mean)
 print(bic_time_mean)
 """
 #plot_time(grid_size, classical_time_mean, bic_time_mean)
-#iter_plot(np.array(S_class), N)
+iter_plot(np.array(S_class), N)
 plt.show()
 
 

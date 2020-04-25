@@ -2,7 +2,6 @@ import sympy as sym
 import interval as ival
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter, iter_plot
-from kravchik_operator import krawczyk_eval, derived_reccurent_form
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
 from interval_checker import S_class
 from results_func import *
@@ -25,7 +24,7 @@ def func_ellips():
     return f, U, V
 
 
-N = 30  # The number of boxes on uniform grid
+N = 50  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_ellips()
 v1 = ival.Interval([0.1, 1.5])  # Set the interval for v1
@@ -39,20 +38,20 @@ size = 2  # The dimension of uniform grid
 eps = 1e-3  # accuracy
 coef = 1.5  # Coefficient
 
-ext_calcul = ClassicalKrawczykCalcul(f, U, V, coef)
-#ext_calcul_bicentered = BicenteredKrawczykCalcul(interval_extension, derived_reccurent_form, coef)
+ext_calcul = ClassicalKrawczykCalcul(f, U, V)
+ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, eps)
-#area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
-#                                              classical_checker, ext_calcul_bicentered, eps)
+area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
+                                              classical_checker, ext_calcul_bicentered, eps)
 #"""
 uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 ellipse = Ellipse((0, 0), 2*a, 2*b, fc='y', fill=False)
 plt.gca().add_patch(ellipse)
-#uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
-#ellipse = Ellipse((0, 0), 2*a, 2*b, fc='y', fill=False)
-#plt.gca().add_patch(ellipse)
+uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
+ellipse = Ellipse((0, 0), 2*a, 2*b, fc='y', fill=False)
+plt.gca().add_patch(ellipse)
 #"""
 grid_size = [10, 20, 30, 40, 50, 60]
 
@@ -64,7 +63,7 @@ coef_test(L2u, BicenteredKrawczykCalcul, interval_extension, V_ival,
           k, "Bicentered", bicentered_checker, derived_reccurent_form)
 """
 #plot_time(grid_size, classical_time_mean, bic_time_mean)
-#iter_plot(np.array(S_class), N)
+iter_plot(np.array(S_class), N)
 plt.show()
 
 
