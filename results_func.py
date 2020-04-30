@@ -3,6 +3,10 @@ import seaborn as sns
 import numpy as np
 from check_box import check_box
 import matplotlib.pyplot as plt
+from interval_checker import classical_checker
+import interval as ival
+import pickle
+import pandas as pd
 
 def plot_dist(S1, S2):
     """
@@ -91,3 +95,60 @@ def coef_test(L2u, CalculClass, interval_extension, V_ival, k, name, checker, de
     pdf = np.array(pdf).reshape(len(grid_size), len(coef_arr)).T
     for i in range(len(grid_size)):
         print(name + " Krawczyk", pdf[::, i])
+
+
+def start_interval_test(L2u, ExtensionCalcul, V_ival, name, example):
+    """
+    :param L2u: the borders of the grid
+    :param ExtensionCalcul: the class of the used method
+    :param V_ival: vector of not fixed interval variables
+    :param name: name of the method
+    :param example: name of the tested example
+    """
+    V_ival = np.array(V_ival)[0]
+    n = 11
+    V_left = np.linspace(V_ival[0] - 0.5, V_ival[0] + 0.5, n)
+    V_right = np.linspace(V_ival[1] - 0.5, V_ival[1] + 0.5,  n)
+    print(V_left)
+    print(V_right)
+    grid_size = [10, 30, 60]
+    size = 2
+    pdf = []
+    for i in grid_size:
+        for j in range(n):
+            for k in range(n):
+                grid = np.linspace(-L2u, L2u, i+1)
+                V_ival = [ival.Interval([V_left[j], V_right[k]])]
+                area_points, border_points = check_box(grid, size, V_ival,
+                                                               classical_checker, ExtensionCalcul, eps)
+                pdf.append(len(area_points))
+    with open(name + example + '.pickle', 'wb') as f:
+        pickle.dump(pdf, f)
+    #print(np.shape(pdf))
+    #pdf = np.array(pdf).reshape(len(grid_size), n).T
+    #for i in range(len(grid_size)):
+    #    print(name + " Krawczyk", pdf[::, i])
+
+
+def work_with_result(name, example, V_ival):
+    with open(name + example + '.pickle', 'rb') as f:
+        data = pickle.load(f)
+    print(name)
+    m = 3
+    n = 11
+    V_ival = np.array(V_ival)[0]
+    V_left = np.round(np.linspace(V_ival[0] - 0.5, V_ival[0] + 0.5, n), 1)
+    V_right = np.round(np.linspace(V_ival[1] - 0.5, V_ival[1] + 0.5, n), 1)
+    data = np.array(data).reshape(m, n, n)
+    pd10 = pd.DataFrame(data[0], columns = V_right, index= V_left)
+    pd10.to_csv(example + name + "10.csv")
+    pd30 = pd.DataFrame(data[1], columns = V_right, index= V_left)
+    pd30.to_csv(example + name + "30.csv")
+    pd50 = pd.DataFrame(data[2], columns = V_right, index= V_left)
+    pd50.to_csv(example + name + "50.csv")
+    print("10")
+    print(pd10)
+    print("30")
+    print(pd30)
+    print("60")
+    print(pd50)

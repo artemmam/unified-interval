@@ -78,7 +78,12 @@ class ExtCalcul:
             for j in range(len(FV)):
                 M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
         M = M.astype(float)
-        return np.linalg.inv(M).reshape(len(V)*len(V))
+        print(M)
+        if M == 0:
+            print("box", U)
+            return "sing"
+        else:
+            return np.linalg.inv(M).reshape(len(V)*len(V))
 
 
 class ClassicalKrawczykCalcul(ExtCalcul):
@@ -91,11 +96,14 @@ class ClassicalKrawczykCalcul(ExtCalcul):
         :return: interval vector
         """
         L = self.calculate_lam(V, box)
-        param = [box] + [L]
-        C = []
-        for i in range(len(V)):
-            C.append(V[i].mid())
-        return np.array(self.func(V, C, param))
+        if L == "sing":
+            return "sing"
+        else:
+            param = [box] + [L]
+            C = []
+            for i in range(len(V)):
+                C.append(V[i].mid())
+            return np.array(self.func(V, C, param))
 
 
 class BicenteredKrawczykCalcul(ExtCalcul):
@@ -167,10 +175,13 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         :return: interval vector
         """
         L = self.calculate_lam(V, box, self.coef)
-        param = [box] + [L]
-        C_min, C_max = self.calcul_new_c(V, L, box)
-        v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
-        v_bic = []
-        for i in range(len(V)):
-            v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
-        return np.array(v_bic).T
+        if L == "sing":
+            return "sing"
+        else:
+            param = [box] + [L]
+            C_min, C_max = self.calcul_new_c(V, L, box)
+            v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
+            v_bic = []
+            for i in range(len(V)):
+                v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
+            return np.array(v_bic).T

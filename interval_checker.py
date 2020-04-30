@@ -24,10 +24,14 @@ def classical_checker(box, v_init, eps, ext_calcul):
     v_iter = v_init.copy()
     n = len(v_init)
     ch = True
+    if ext_calcul.calculate_extension(box, v_iter) == "sing":
+        return "outside"
     v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1) + Interval([0, 1])
     s = 0
     while ch:
         s += 1
+        if ext_calcul.calculate_extension(box, v_iter) == "sing":
+            return "outside"
         v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
         if abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))) < eps:
             ch = False
