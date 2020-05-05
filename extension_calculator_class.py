@@ -78,7 +78,6 @@ class ExtCalcul:
             for j in range(len(FV)):
                 M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
         M = M.astype(float)
-        print(M)
         if M == 0:
             print("box", U)
             return "sing"
