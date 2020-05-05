@@ -79,7 +79,6 @@ def derived_reccurent_form_alt(f, V, U, l):
     for j in range(len(V)):
         g_v = derive_matrix(sym.Matrix([f_rec[j]]), V)
         g = sym.Matrix([g, g_v])
-    print("derived_reccurent_form", g)
     return sym.lambdify([V, param], g)
 
 def centered_form(f, V, C, param):
@@ -104,10 +103,9 @@ def centered_form(f, V, C, param):
         subsv.append((V[i], C[i]))
     f = f.subs(subsv)
     g_eval = f + g_v * v_c # Classical central form
+    print("Old")
+    print(g_eval)
     return sym.lambdify([V, C, param], g_eval)
-
-
-
 
 def derive_matrix(g, v):
     """
@@ -134,23 +132,15 @@ def centered_form_one_fun(f, V, C, param):
     :param param: parameters
     :return: function for calculating centered interval form
     """
-    print("Original f", f)
-    print(C)
     g_fin = sym.Matrix()
     C = sym.Matrix([C]).reshape(len(V), len(V))
     for i in range(len(V)):
-        print("------")
-        print(i)
-        print("------")
         c = sym.Matrix()
         v = sym.Matrix()
-
         for j in range(len(V)):
             v = v.row_insert(j, sym.Matrix([V[j]]))
         g_v = derive_matrix(sym.Matrix([f[i]]), v)
-        print(C)
         c = C[i, ::].T
-        print(c)
         v_c = v - c
         subsv = []
         for j in range(len(V)):
@@ -158,8 +148,7 @@ def centered_form_one_fun(f, V, C, param):
         f_s = f.subs(subsv)
         g_eval = sym.Matrix([f_s[i]]) + g_v.T * v_c  # Classical central form
         g_fin = sym.Matrix([g_fin, g_eval])
-        print("******")
-    print("New", g_fin.shape)
+    print("New")
     print(g_fin)
     return sym.lambdify([V, C, param], g_fin)
 
@@ -175,6 +164,6 @@ def krawczyk_eval(f, u, v, l, c):
     :return: function of centered form from recurrent form
     """
     param = [u] + [l]
-    centered_form_one_fun(recurrent_form(f, v, l), v, c, param)
-    return centered_form(recurrent_form(f, v, l), v, c, param)
+    centered_form(recurrent_form(f, v, l), v, c, param)
+    return centered_form_one_fun(recurrent_form(f, v, l), v, c, param)
 
