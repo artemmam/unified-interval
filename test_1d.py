@@ -25,7 +25,7 @@ def func_1d():
 N = 20  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_1d()
-v1 = ival.Interval([0, 1.1])  # Set the interval for v1
+v1 = ival.Interval([0.1, 1.2])  # Set the interval for v1
 V_ival = [v1]  # interval vector V
 L2u = 2  # the width of the of the 2-dimensional square
 

@@ -1,5 +1,5 @@
 import numpy as np
-from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form
+from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form, derived_reccurent_form_alt
 import sympy as sym
 import interval as ival
 
@@ -58,7 +58,8 @@ class ExtCalcul:
         c = []
         lam = []
         for i in range(len(self.v)):
-            c.append(sym.symbols("c" + str(i)))
+            for j in range(len(self.v)):
+                c.append(sym.symbols("c" + str(i) + str(j)))
             for j in range(len(self.v)):
                 lam.append(sym.symbols("lam" + str(i) + str(j)))
         return krawczyk_eval(self.f, self.u, self.v, lam, c)
@@ -78,7 +79,7 @@ class ExtCalcul:
             for j in range(len(FV)):
                 M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
         M = M.astype(float)
-        if M == 0:
+        if np.linalg.det(M) == 0:
             print("box", U)
             return "sing"
         else:
@@ -101,7 +102,9 @@ class ClassicalKrawczykCalcul(ExtCalcul):
             param = [box] + [L]
             C = []
             for i in range(len(V)):
-                C.append(V[i].mid())
+                for j in range(len(V)):
+                    C.append(V[i].mid())
+            C = np.array(C).reshape(len(V), len(V)).T.reshape(len(V)*len(V))
             return np.array(self.func(V, C, param))
 
 
@@ -129,7 +132,7 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         for i in range(len(self.v)):
             for j in range(len(self.v)):
                 lam.append(sym.symbols("lam" + str(i) + str(j)))
-        return derived_recurrent_form(self.f, self.v, self.u, lam)
+        return derived_reccurent_form_alt(self.f, self.v, self.u, lam)
 
     def calcul_new_c(self, V, L, box):
         """
@@ -141,29 +144,27 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         """
         param = [box] + [L]
         new_v_matrix = self.g(V, param)
-        new_v = []
-        c_min = []
-        c_max = []
+        new_v_matrix = new_v_matrix.reshape(len(V), len(V))
+        new_v = new_v_matrix
         n = len(new_v_matrix)
+        c_max = np.zeros_like(new_v_matrix)
+        c_min = np.zeros_like(new_v_matrix)
         for i in range(n):
-            new_v.append(new_v_matrix[i][i])
-            c_min.append(0)
-            c_max.append(0)
+            for j in range(n):
+                if new_v[i][j][1] <= 0:
+                    c_min[i][j] = V[j][1]
+                elif new_v[i][j][0] >= 0:
+                    c_min[i][j] = V[j][0]
+                else:
+                    c_min[i][j] = (new_v[i][j][1] * V[j][0] - new_v[i][j][0] * V[j][1]) / (new_v[i][j][1] - new_v[i][j][0])
         for i in range(n):
-            if new_v[i][1] <= 0:
-                c_min[i] = V[i][1]
-            elif new_v[i][0] >= 0:
-                c_min[i] = V[i][0]
-            else:
-                c_min[i] = (new_v[i][1] * V[i][0] - new_v[i][0] * V[i][1]) / (new_v[i][1] - new_v[i][0])
-        for i in range(n):
-
-            if new_v[i][1] <= 0:
-                c_max[i] = V[i][0]
-            elif new_v[i][0] >= 0:
-                c_max[i] = V[i][1]
-            else:
-                c_max[i] = (new_v[i][0] * V[i][0] - new_v[i][1] * V[i][1]) / (new_v[i][0] - new_v[i][1])
+            for j in range(n):
+                if new_v[i][j][1] <= 0:
+                    c_max[i][j] = V[j][0]
+                elif new_v[i][j][0] >= 0:
+                    c_max[i][j] = V[j][1]
+                else:
+                    c_max[i][j] = (new_v[i][j][0] * V[j][0] - new_v[i][j][1] * V[j][1]) / (new_v[i][j][0] - new_v[i][j][1])
         return c_min, c_max
 
     def calculate_extension(self, box, V):
@@ -179,6 +180,8 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         else:
             param = [box] + [L]
             C_min, C_max = self.calcul_new_c(V, L, box)
+            C_min = C_min.reshape(len(V) * len(V))
+            C_max = C_max.reshape(len(V) * len(V))
             v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
             v_bic = []
             for i in range(len(V)):

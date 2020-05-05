@@ -22,7 +22,7 @@ def func_2rpr(d):
     return f, U, V
 
 
-N = 10  # The number of nodes on uniform grid
+N = 30  # The number of nodes on uniform grid
 ##### 2-RPR
 L1v = 3  # Lower range of row
 L2v = 15  # Upper range of row
