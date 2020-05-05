@@ -138,6 +138,9 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         c_min = []
         c_max = []
         n = len(new_v_matrix)
+        print("-----")
+        print(V)
+        print(new_v_matrix)
         for i in range(n):
             new_v.append(new_v_matrix[i][i])
             c_min.append(0)
