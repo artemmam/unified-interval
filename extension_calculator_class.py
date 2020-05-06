@@ -58,8 +58,8 @@ class ExtCalcul:
         c = []
         lam = []
         for i in range(len(self.v)):
-            c.append(sym.symbols("c" + str(i)))
             for j in range(len(self.v)):
+                c.append(sym.symbols("c" + str(i) + str(j)))
                 lam.append(sym.symbols("lam" + str(i) + str(j)))
         return krawczyk_eval(self.f, self.u, self.v, lam, c)
 
@@ -78,7 +78,11 @@ class ExtCalcul:
             for j in range(len(FV)):
                 M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
         M = M.astype(float)
-        return np.linalg.inv(M).reshape(len(V)*len(V))
+        if np.linalg.det(M) == 0:
+            print("box", U)
+            return "sing"
+        else:
+            return np.linalg.inv(M).reshape(len(V)*len(V))
 
 
 class ClassicalKrawczykCalcul(ExtCalcul):
@@ -91,11 +95,16 @@ class ClassicalKrawczykCalcul(ExtCalcul):
         :return: interval vector
         """
         L = self.calculate_lam(V, box)
-        param = [box] + [L]
-        C = []
-        for i in range(len(V)):
-            C.append(V[i].mid())
-        return np.array(self.func(V, C, param))
+        if L == "sing":
+            return "sing"
+        else:
+            param = [box] + [L]
+            C = []
+            for i in range(len(V)):
+                for j in range(len(V)):
+                    C.append(V[i].mid())
+            C = np.array(C).reshape(len(V), len(V)).T.reshape(len(V)*len(V))
+            return np.array(self.func(V, C, param))
 
 
 class BicenteredKrawczykCalcul(ExtCalcul):
@@ -133,33 +142,27 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         :return: intervals c_min and c_max
         """
         param = [box] + [L]
-        new_v_matrix = self.g(V, param)
-        new_v = []
-        c_min = []
-        c_max = []
-        n = len(new_v_matrix)
-        print("-----")
-        print(V)
-        print(new_v_matrix)
+        new_v = self.g(V, param)
+        new_v = new_v.reshape(len(V), len(V))
+        n = len(new_v)
+        c_max = np.zeros_like(new_v)
+        c_min = np.zeros_like(new_v)
         for i in range(n):
-            new_v.append(new_v_matrix[i][i])
-            c_min.append(0)
-            c_max.append(0)
+            for j in range(n):
+                if new_v[i][j][1] <= 0:
+                    c_min[i][j] = V[j][1]
+                elif new_v[i][j][0] >= 0:
+                    c_min[i][j] = V[j][0]
+                else:
+                    c_min[i][j] = (new_v[i][j][1] * V[j][0] - new_v[i][j][0] * V[j][1]) / (new_v[i][j][1] - new_v[i][j][0])
         for i in range(n):
-            if new_v[i][1] <= 0:
-                c_min[i] = V[i][1]
-            elif new_v[i][0] >= 0:
-                c_min[i] = V[i][0]
-            else:
-                c_min[i] = (new_v[i][1] * V[i][0] - new_v[i][0] * V[i][1]) / (new_v[i][1] - new_v[i][0])
-        for i in range(n):
-
-            if new_v[i][1] <= 0:
-                c_max[i] = V[i][0]
-            elif new_v[i][0] >= 0:
-                c_max[i] = V[i][1]
-            else:
-                c_max[i] = (new_v[i][0] * V[i][0] - new_v[i][1] * V[i][1]) / (new_v[i][0] - new_v[i][1])
+            for j in range(n):
+                if new_v[i][j][1] <= 0:
+                    c_max[i][j] = V[j][0]
+                elif new_v[i][j][0] >= 0:
+                    c_max[i][j] = V[j][1]
+                else:
+                    c_max[i][j] = (new_v[i][j][0] * V[j][0] - new_v[i][j][1] * V[j][1]) / (new_v[i][j][0] - new_v[i][j][1])
         return c_min, c_max
 
     def calculate_extension(self, box, V):
@@ -170,10 +173,15 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         :return: interval vector
         """
         L = self.calculate_lam(V, box, self.coef)
-        param = [box] + [L]
-        C_min, C_max = self.calcul_new_c(V, L, box)
-        v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
-        v_bic = []
-        for i in range(len(V)):
-            v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
-        return np.array(v_bic).T
+        if L == "sing":
+            return "sing"
+        else:
+            param = [box] + [L]
+            C_min, C_max = self.calcul_new_c(V, L, box)
+            C_min = C_min.reshape(len(V) * len(V))
+            C_max = C_max.reshape(len(V) * len(V))
+            v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
+            v_bic = []
+            for i in range(len(V)):
+                v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
+            return np.array(v_bic).T

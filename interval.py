@@ -98,11 +98,8 @@ class Interval:
 
     def __truediv__(self, other):
         ointerval = valueToInterval(other)
-        if ointerval[0] != 0 and ointerval[1] != 0:
-            v = [self.x[0] / ointerval.x[0], self.x[0] / ointerval.x[1], self.x[1] / ointerval.x[0], self.x[1] / ointerval.x[1]]
-            b = [min(v), max(v)]
-        else:
-            b = [0.2, 0.2]
+        v = [self.x[0] / ointerval.x[0], self.x[0] / ointerval.x[1], self.x[1] / ointerval.x[0], self.x[1] / ointerval.x[1]]
+        b = [min(v), max(v)]
         return Interval(b)
 
     def __floordiv__(self, other):
