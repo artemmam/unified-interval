@@ -1,5 +1,5 @@
 import numpy as np
-from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form, derived_reccurent_form_alt
+from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form
 import sympy as sym
 import interval as ival
 
@@ -60,7 +60,6 @@ class ExtCalcul:
         for i in range(len(self.v)):
             for j in range(len(self.v)):
                 c.append(sym.symbols("c" + str(i) + str(j)))
-            for j in range(len(self.v)):
                 lam.append(sym.symbols("lam" + str(i) + str(j)))
         return krawczyk_eval(self.f, self.u, self.v, lam, c)
 
@@ -132,7 +131,7 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         for i in range(len(self.v)):
             for j in range(len(self.v)):
                 lam.append(sym.symbols("lam" + str(i) + str(j)))
-        return derived_reccurent_form_alt(self.f, self.v, self.u, lam)
+        return derived_recurrent_form(self.f, self.v, self.u, lam)
 
     def calcul_new_c(self, V, L, box):
         """
@@ -143,25 +142,19 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         :return: intervals c_min and c_max
         """
         param = [box] + [L]
-        new_v_matrix = self.g(V, param)
-        new_v_matrix = new_v_matrix.reshape(len(V), len(V))
-        new_v = new_v_matrix
-        n = len(new_v_matrix)
-        c_max = np.zeros_like(new_v_matrix)
-        c_min = np.zeros_like(new_v_matrix)
+        new_v = self.g(V, param)
+        new_v = new_v.reshape(len(V), len(V))
+        n = len(new_v)
+        c_max = np.zeros_like(new_v)
+        c_min = np.zeros_like(new_v)
         for i in range(n):
             for j in range(n):
-                print("-----")
-                print(i, j)
-                print(V[j])
-                print(new_v)
                 if new_v[i][j][1] <= 0:
                     c_min[i][j] = V[j][1]
                 elif new_v[i][j][0] >= 0:
                     c_min[i][j] = V[j][0]
                 else:
                     c_min[i][j] = (new_v[i][j][1] * V[j][0] - new_v[i][j][0] * V[j][1]) / (new_v[i][j][1] - new_v[i][j][0])
-        print(c_min)
         for i in range(n):
             for j in range(n):
                 if new_v[i][j][1] <= 0:
@@ -185,17 +178,8 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         else:
             param = [box] + [L]
             C_min, C_max = self.calcul_new_c(V, L, box)
-            #print(C_max)
-            #buf = C_min[1][0]
-            #C_min[1, 0] = C_min[1, 1]
-            #C_min[1, 1] = buf
-            #buf = C_max[0][0]
-            #C_max[0, 0] = C_max[0, 1]
-            #C_max[0, 1] = buf
             C_min = C_min.reshape(len(V) * len(V))
             C_max = C_max.reshape(len(V) * len(V))
-            #print(C_min)
-            #print(C_max)
             v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
             v_bic = []
             for i in range(len(V)):

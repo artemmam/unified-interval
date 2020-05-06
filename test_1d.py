@@ -22,7 +22,7 @@ def func_1d():
     return f, U, V
 
 
-N = 30  # The number of boxes on uniform grid
+N = 10  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_1d()
 v1 = ival.Interval([0.1, 1.2])  # Set the interval for v1
@@ -73,11 +73,11 @@ print(classical_time_mean)
 print(bic_time_mean)
 """
 #start_interval_test(L2u, ext_calcul, [ival.Interval([0, 1])], "Classical", "circle")
-work_with_result("Classical", "circle", [ival.Interval([0, 1])])
+#work_with_result("Classical", "circle", [ival.Interval([0, 1])])
 #start_interval_test(L2u, ext_calcul_bicentered, [ival.Interval([0, 1])], "Bicentered", "circle")
-work_with_result("Bicentered", "circle", [ival.Interval([0, 1])])
+#work_with_result("Bicentered", "circle", [ival.Interval([0, 1])])
 #plot_time(grid_size, classical_time_mean, bic_time_mean)
-#iter_plot(np.array(S_class), N)
+iter_plot(np.array(S_class), N)
 plt.show()
 
 
