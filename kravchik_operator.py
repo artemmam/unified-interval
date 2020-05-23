@@ -90,7 +90,7 @@ def centered_form(f, V, C, param):
     Centered interval form
     :param f: old right-hand side
     :param V: list of checking intervals
-    :param C: point from interval V
+    :param C: matrix of points from interval V
     :param param: parameters
     :return: function for calculating centered interval form
     """
@@ -109,6 +109,7 @@ def centered_form(f, V, C, param):
         f_s = f.subs(subsv)
         g_eval = sym.Matrix([f_s[i]]) + g_v.T * v_c  # Classical central form
         g_fin = sym.Matrix([g_fin, g_eval])
+        #print(g_fin)
     return sym.lambdify([V, C, param], g_fin)
 
 

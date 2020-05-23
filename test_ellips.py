@@ -24,15 +24,12 @@ def func_ellips():
     return f, U, V
 
 
-N = 10  # The number of boxes on uniform grid
+N = 12  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_ellips()
 v1 = ival.Interval([0.1, 1.5])  # Set the interval for v1
 V_ival = [v1]  # interval vector V
 L2u = max(a, b)  # the width of the of the 2-dimensional square
-
-
-#derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 eps = 1e-3  # accuracy
@@ -53,16 +50,6 @@ uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Kra
 ellipse = Ellipse((0, 0), 2*a, 2*b, fc='y', fill=False)
 plt.gca().add_patch(ellipse)
 #"""
-grid_size = [10, 20, 30, 40, 50, 60]
-
-"""
-# Uncomment this to enable coeff variation
-coef_test(L2u, ClassicalKrawczykCalcul, interval_extension, V_ival,
-          k, "Classical", classical_checker)
-coef_test(L2u, BicenteredKrawczykCalcul, interval_extension, V_ival,
-          k, "Bicentered", bicentered_checker, derived_reccurent_form)
-"""
-#plot_time(grid_size, classical_time_mean, bic_time_mean)
 iter_plot(np.array(S_class), N)
 plt.show()
 

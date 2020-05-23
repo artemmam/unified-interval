@@ -24,33 +24,29 @@ def classical_checker(box, v_init, eps, ext_calcul):
     v_iter = v_init.copy()
     n = len(v_init)
     ch = True
-    if ext_calcul.calculate_extension(box, v_iter).any() == "sing":
-        return "outside"
-    v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1) + Interval([0, 1])
+    v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1) + Interval([0, 0.1])
     s = 0
     while ch:
         s += 1
-        if ext_calcul.calculate_extension(box, v_iter).any() == "sing":
-            return "outside"
         v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
-        if abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))) < eps:
-            ch = False
-            break
-        v_prev = v_ext
         check = True
-        for i in range(n):
-            if not(v_ext[i].isIn(v_iter[i])):
-                check = False
-                break
-        if check:
-            S_class.append(s)
-            return 'inside'  # if it is inside previous interval, then it's inside the workspace area
         for i in range(n):
             if v_iter[i].isNoIntersec(v_ext[i]):
                 S_class.append(s)
                 return 'outside'
             else:
                 v_iter[i] = v_iter[i].intersec(v_ext[i])  # if our evalution not fully inside, then intersect it and repeat
+        for i in range(n):
+            if not(v_ext[i].isIn(v_iter[i])):
+                check = False
+                break
+        if abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))) < eps:
+            ch = False
+            break
+        v_prev = v_ext
+        if check:
+            S_class.append(s)
+            return 'inside'  # if it is inside previous interval, then it's inside the workspace area
     S_class.append(s)
     return 'border'  # if we achieve max of the iterations, then it's border
 

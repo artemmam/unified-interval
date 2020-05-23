@@ -77,10 +77,9 @@ class ExtCalcul:
         for i in range(len(FV)):
             for j in range(len(FV)):
                 M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
-        M = M.astype(float)
+        M = M.astype(np.float64)
         if np.linalg.det(M) == 0:
-            print("box", U)
-            return "sing"
+            return np.linalg.inv(M + 1).reshape(len(V)*len(V))
         else:
             return np.linalg.inv(M).reshape(len(V)*len(V))
 
@@ -94,17 +93,14 @@ class ClassicalKrawczykCalcul(ExtCalcul):
         :param V: variables for checking
         :return: interval vector
         """
-        L = self.calculate_lam(V, box)
-        if L == "sing":
-            return "sing"
-        else:
-            param = [box] + [L]
-            C = []
-            for i in range(len(V)):
-                for j in range(len(V)):
-                    C.append(V[i].mid())
-            C = np.array(C).reshape(len(V), len(V)).T.reshape(len(V)*len(V))
-            return np.array(self.func(V, C, param))
+        L = self.calculate_lam(V, box, self.coef)
+        param = [box] + [L]
+        C = []
+        for i in range(len(V)):
+            for j in range(len(V)):
+                C.append(V[i].mid())
+        C = np.array(C).reshape(len(V), len(V)).T.reshape(len(V)*len(V))
+        return np.array(self.func(V, C, param))
 
 
 class BicenteredKrawczykCalcul(ExtCalcul):
@@ -173,15 +169,12 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         :return: interval vector
         """
         L = self.calculate_lam(V, box, self.coef)
-        if L == "sing":
-            return "sing"
-        else:
-            param = [box] + [L]
-            C_min, C_max = self.calcul_new_c(V, L, box)
-            C_min = C_min.reshape(len(V) * len(V))
-            C_max = C_max.reshape(len(V) * len(V))
-            v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
-            v_bic = []
-            for i in range(len(V)):
-                v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
-            return np.array(v_bic).T
+        param = [box] + [L]
+        C_min, C_max = self.calcul_new_c(V, L, box)
+        C_min = C_min.reshape(len(V) * len(V))
+        C_max = C_max.reshape(len(V) * len(V))
+        v_ext_min, v_ext_max = self.func(V, C_min, param), self.func(V, C_max, param)
+        v_bic = []
+        for i in range(len(V)):
+            v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
+        return np.array(v_bic).T

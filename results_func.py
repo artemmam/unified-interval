@@ -4,6 +4,7 @@ import numpy as np
 from check_box import check_box
 import matplotlib.pyplot as plt
 from interval_checker import classical_checker
+from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
 import interval as ival
 import pickle
 import pandas as pd
@@ -66,7 +67,7 @@ def plot_time(grid, time, time1):
     ax.legend(loc='upper left')
     ax.set_title("The dependency of the time from grid size")
 
-def coef_test(L2u, CalculClass, interval_extension, V_ival, k, name, checker, derived_reccurent_form=0):
+def coef_test(f, U, V, L2u, V_ival, eps, name, example, ch = ""):
     """
     :param L2u: the borders of the grid
     :param CalculClass: the class of the used method
@@ -77,7 +78,7 @@ def coef_test(L2u, CalculClass, interval_extension, V_ival, k, name, checker, de
     :param checker: checker type
     :param derived_reccurent_form: if we use Bicentered method we need to use derived_recurrent_form
     """
-    coef_arr = np.linspace(0, 5, 21)
+    coef_arr = np.linspace(0.1, 1, 10)
     print(coef_arr)
     grid_size = [10, 30, 60]
     size = 2
@@ -85,16 +86,16 @@ def coef_test(L2u, CalculClass, interval_extension, V_ival, k, name, checker, de
     for i in grid_size:
         for j in coef_arr:
             grid = np.linspace(-L2u, L2u, i+1)
-            if derived_reccurent_form == 0:
-                ext_calcul = CalculClass(interval_extension, j)
+            if ch == "b":
+                ext_calcul = BicenteredKrawczykCalcul(f, U, V, j)
             else:
-                ext_calcul = CalculClass(interval_extension, derived_reccurent_form, j)
+                ext_calcul = ClassicalKrawczykCalcul(f, U, V, j)
             area_points, border_points = check_box(grid, size, V_ival,
-                                        checker, ext_calcul, k)
+                                               classical_checker, ext_calcul, eps)
             pdf.append(len(area_points))
-    pdf = np.array(pdf).reshape(len(grid_size), len(coef_arr)).T
-    for i in range(len(grid_size)):
-        print(name + " Krawczyk", pdf[::, i])
+    print(np.shape(pdf))
+    with open(name + example + 'coef.pickle', 'wb') as f:
+        pickle.dump(pdf, f)
 
 
 def start_interval_test(L2u, ExtensionCalcul, V_ival, name, example):
@@ -128,6 +129,17 @@ def start_interval_test(L2u, ExtensionCalcul, V_ival, name, example):
     #pdf = np.array(pdf).reshape(len(grid_size), n).T
     #for i in range(len(grid_size)):
     #    print(name + " Krawczyk", pdf[::, i])
+
+
+def work_with_result_coef(name, example):
+    with open(name + example + 'coef.pickle', 'rb') as f:
+        data = pickle.load(f)
+    print(name)
+    m = 3
+    n = 13
+    data = np.array(data).reshape(m, n).T
+    df = pd.DataFrame(data, columns= [10, 30, 60], index=np.linspace(0, 3, 13))
+    print(df)
 
 
 def work_with_result(name, example, V_ival):
