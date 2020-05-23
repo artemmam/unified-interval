@@ -79,7 +79,7 @@ class ExtCalcul:
                 M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
         M = M.astype(np.float64)
         if np.linalg.det(M) == 0:
-            return np.linalg.inv(M + 1).reshape(len(V)*len(V))
+            return np.linalg.inv(M + np.eye(len(FV))).reshape(len(V)*len(V))
         else:
             return np.linalg.inv(M).reshape(len(V)*len(V))
 

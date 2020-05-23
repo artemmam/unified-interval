@@ -27,7 +27,7 @@ def func_ellips():
 N = 12  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_ellips()
-v1 = ival.Interval([0.1, 1.5])  # Set the interval for v1
+v1 = ival.Interval([0., 1.5])  # Set the interval for v1
 V_ival = [v1]  # interval vector V
 L2u = max(a, b)  # the width of the of the 2-dimensional square
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
