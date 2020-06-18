@@ -25,7 +25,7 @@ def func_1d():
 N = 30  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_1d()
-v1 = ival.Interval([0, 1.2])  # Set the interval for v1
+v1 = ival.Interval([0., 1.2])  # Set the interval for v1
 V_ival = [v1]  # interval vector V
 L2u = 2  # the width of the of the 2-dimensional square
 
@@ -33,7 +33,7 @@ L2u = 2  # the width of the of the 2-dimensional square
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 eps = 1e-3  # accuracy
-coef = 1.5  # Coefficient
+coef = 2  # Coefficient
 
 ext_calcul = ClassicalKrawczykCalcul(f, U, V)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
@@ -41,14 +41,16 @@ area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, eps)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul_bicentered, eps)
-
 uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 plt.gca().add_patch(circle)
 uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
 circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 plt.gca().add_patch(circle)
-
+#coef_test(f, U, V, L2u, V_ival, eps, "Classical", "circle", ch = "c")
+#coef_test(f, U, V, L2u, V_ival, eps, "Bicentered", "circle", ch = "b")
+#work_with_result_coef("Classical", "circle")
+#work_with_result_coef("Bicentered", "circle")
 iter_plot(np.array(S_class), N)
 plt.show()
 

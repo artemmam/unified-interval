@@ -78,7 +78,7 @@ def coef_test(f, U, V, L2u, V_ival, eps, name, example, ch = ""):
     :param checker: checker type
     :param derived_reccurent_form: if we use Bicentered method we need to use derived_recurrent_form
     """
-    coef_arr = np.linspace(0.1, 1, 10)
+    coef_arr = np.linspace(0.25, 3, 12)
     print(coef_arr)
     grid_size = [10, 30, 60]
     size = 2
@@ -98,7 +98,7 @@ def coef_test(f, U, V, L2u, V_ival, eps, name, example, ch = ""):
         pickle.dump(pdf, f)
 
 
-def start_interval_test(L2u, ExtensionCalcul, V_ival, name, example):
+def start_interval_test(L2u, ExtensionCalcul, V_ival, eps, name, example):
     """
     :param L2u: the borders of the grid
     :param ExtensionCalcul: the class of the used method
@@ -136,9 +136,9 @@ def work_with_result_coef(name, example):
         data = pickle.load(f)
     print(name)
     m = 3
-    n = 13
+    n = 12
     data = np.array(data).reshape(m, n).T
-    df = pd.DataFrame(data, columns= [10, 30, 60], index=np.linspace(0, 3, 13))
+    df = pd.DataFrame(data, columns= [10, 30, 60], index=np.linspace(0.25, 3, 12))
     print(df)
 
 

@@ -11,6 +11,7 @@ def uni_plotter(area_points, border_points, L2, title):
     :param L2: the size of boundary box
     :param title: the name of the method
     """
+    plt.rcParams.update({'font.size': 18})
     left_border = -L2  # Left border of rectangle which we use to build uniform grid
     right_border = L2
     fig, ax = plt.subplots(figsize=(8, 8))
