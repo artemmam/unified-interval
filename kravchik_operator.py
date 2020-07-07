@@ -1,4 +1,5 @@
 import sympy as sym
+from sympy import sin, cos
 from sympy.utilities.lambdify import implemented_function
 import interval as ival
 v1, v2, u1, u2, d = sym.symbols('v1, v2, u1, u2, d')
@@ -38,6 +39,12 @@ def mycos(x):
     """
     return ival.cos(x)
 
+def function_replacer(fv):
+    mysin1 = implemented_function(sym.Function('mysin1'), lambda x: mysin(x))
+    mycos1 = implemented_function(sym.Function('mycos1'), lambda x: mycos(x))
+    fv = fv.replace(sin, mysin1)
+    fv = fv.replace(cos, mycos1)
+    return fv
 
 def derived_f(f, v, u):
     """
@@ -49,6 +56,8 @@ def derived_f(f, v, u):
     """
     param = [u]
     fv = derive_matrix(f, v)
+    print("Derived F", fv)
+    fv = function_replacer(fv)
     return sym.lambdify([v, param], fv)
 
 
@@ -64,6 +73,7 @@ def recurrent_form(f, V, lam):
     for i in range(len(V)):
         v = v.row_insert(i, sym.Matrix([V[i]]))
     lam = sym.Matrix([lam]).reshape(len(V), len(V))
+    print("Recurrent form ", v - lam * f)
     return v - lam * f  # Equivalent recurrent transformation
 
 
@@ -82,6 +92,7 @@ def derived_recurrent_form(f, v, u, l):
     for j in range(len(v)):
         g_v = derive_matrix(sym.Matrix([f_rec[j]]), v)
         g = sym.Matrix([g, g_v])
+    g = function_replacer(g)
     return sym.lambdify([v, param], g)
 
 
@@ -101,6 +112,7 @@ def centered_form(f, V, C, param):
         for j in range(len(V)):
             v = v.row_insert(j, sym.Matrix([V[j]]))
         g_v = derive_matrix(sym.Matrix([f[i]]), v)
+        print("g_v (dervived F on v for each row in system) ", g_v)
         c = C[i, ::].T
         v_c = v - c
         subsv = []
@@ -110,6 +122,8 @@ def centered_form(f, V, C, param):
         g_eval = sym.Matrix([f_s[i]]) + g_v.T * v_c  # Classical central form
         g_fin = sym.Matrix([g_fin, g_eval])
         #print(g_fin)
+    g_fin = function_replacer(g_fin)
+    print("Krawczyk extension",g_fin)
     return sym.lambdify([V, C, param], g_fin)
 
 

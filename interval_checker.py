@@ -2,6 +2,7 @@ import numpy as np
 from interval import Interval
 S_class = []
 
+
 def diam(A):
     s = 0
     for v in A:
@@ -9,7 +10,7 @@ def diam(A):
     return np.sqrt(s)
 
 
-def classical_checker(box, v_init, eps, ext_calcul):
+def classical_checker(box, v_init, eps, ext_calcul, log = False):
     """
     Check box with classical method if it is the solution of the system, on the border of the
     solution or there is no intersection with solution.
@@ -30,9 +31,16 @@ def classical_checker(box, v_init, eps, ext_calcul):
         s += 1
         v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
         check = True
+        if log:
+            print("*****")
+            print("Number of iteration =", s)
+            print("Old V = ", v_iter)
+            print("New V = ", v_ext)
         for i in range(n):
             if v_iter[i].isNoIntersec(v_ext[i]):
                 S_class.append(s)
+                if log:
+                    print("Outside")
                 return 'outside'
             else:
                 v_iter[i] = v_iter[i].intersec(v_ext[i])  # if our evalution not fully inside, then intersect it and repeat
@@ -46,8 +54,12 @@ def classical_checker(box, v_init, eps, ext_calcul):
         v_prev = v_ext
         if check:
             S_class.append(s)
+            if log:
+                print("Inside")
             return 'inside'  # if it is inside previous interval, then it's inside the workspace area
     S_class.append(s)
+    if log:
+        print("Border")
     return 'border'  # if we achieve max of the iterations, then it's border
 
 

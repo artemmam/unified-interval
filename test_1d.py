@@ -7,6 +7,7 @@ from interval_checker import S_class
 from results_func import *
 
 
+
 def func_1d():
     """
     Creating symbol variables for 2-RPR eq. system

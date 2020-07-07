@@ -3,7 +3,14 @@ from matplotlib.patches import Rectangle
 from mpl_toolkits.axes_grid1 import AxesGrid
 from matplotlib import colors
 
-def uni_plotter(area_points, border_points, L2, title):
+
+def onclick(event):
+    global ix, iy
+    ix = event.xdata
+    iy = event.ydata
+    gl_logger.find_box(ix, iy)
+
+def uni_plotter(area_points, border_points, L2, title, logger):
     """
     Plotting the set of inside and border boxes
     :param area_points: area boxes set
@@ -11,6 +18,8 @@ def uni_plotter(area_points, border_points, L2, title):
     :param L2: the size of boundary box
     :param title: the name of the method
     """
+    global gl_logger
+    gl_logger = logger
     plt.rcParams.update({'font.size': 18})
     left_border = -L2  # Left border of rectangle which we use to build uniform grid
     right_border = L2
@@ -36,6 +45,12 @@ def uni_plotter(area_points, border_points, L2, title):
         ax.add_patch(rect2)
     ax.set_title(title)
 
+    cid = fig.canvas.mpl_connect('button_press_event', onclick)
+
+
+
+
+
 def iter_plot(s_all, N):
     s_class = s_all[:N**2].reshape(N, N)
     s_bic = s_all[N**2:].reshape(N, N)
@@ -59,7 +74,12 @@ def iter_plot(s_all, N):
     for im in ax:
         im.set_norm(norm)
     cbar1 = grid.cbar_axes[0].colorbar(ax1)
+
+
     plt.show()
+
+
+
 
 
 """
