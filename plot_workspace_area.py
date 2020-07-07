@@ -10,7 +10,7 @@ def onclick(event):
     iy = event.ydata
     gl_logger.find_box(ix, iy)
 
-def uni_plotter(area_points, border_points, L2, title, logger):
+def uni_plotter(area_points, border_points, L2, title, logger = 0):
     """
     Plotting the set of inside and border boxes
     :param area_points: area boxes set
@@ -44,8 +44,8 @@ def uni_plotter(area_points, border_points, L2, title, logger):
                           fill=True, fc='yellow', color='black', linewidth=1.0, alpha=1)
         ax.add_patch(rect2)
     ax.set_title(title)
-
-    cid = fig.canvas.mpl_connect('button_press_event', onclick)
+    if logger!=0:
+        cid = fig.canvas.mpl_connect('button_press_event', onclick)
 
 
 
