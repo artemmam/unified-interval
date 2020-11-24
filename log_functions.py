@@ -29,6 +29,7 @@ class Logger:
             if (x > box[0][0] and x<box[0][1] and y > box[1][0] and y<box[1][1]):
                 print("Box:", box)
                 break
+        print("v_init:", self.__v_init)
         print("Lambda", self.__ext_calcul.calculate_lam(self.__v_init, box).reshape((L, L)))
         classical_checker(box, self.__v_init, self.__eps, self.__ext_calcul, log=True)
         print("-----\n\n\n")

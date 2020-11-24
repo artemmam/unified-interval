@@ -22,6 +22,8 @@ def classical_checker(box, v_init, eps, ext_calcul, log = False):
              "border" if it is on the border of solution
              "outside" if it doesn't have intersection with solution
     """
+    #[[-5.0, -4.0][3.0, 4.0]]
+    #print("Box", box)
     v_iter = v_init.copy()
     n = len(v_init)
     ch = True

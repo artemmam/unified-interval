@@ -1,8 +1,17 @@
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Rectangle, Circle
 from mpl_toolkits.axes_grid1 import AxesGrid
 from matplotlib import colors
 
+def plot_circles(r1, r2, d, ax):
+    circle = plt.Circle((-0.5*d, 0), radius=r1, fc='y', fill=False)
+    ax.add_patch(circle)
+    circle = plt.Circle((0.5*d, 0), radius=r1, fc='y', fill=False)
+    ax.add_patch(circle)
+    circle = plt.Circle((-0.5*d, 0), radius=r2, fc='y', fill=False)
+    ax.add_patch(circle)
+    circle = plt.Circle((0.5*d, 0), radius=r2, fc='y', fill=False)
+    ax.add_patch(circle)
 
 def onclick(event):
     global ix, iy
@@ -10,7 +19,7 @@ def onclick(event):
     iy = event.ydata
     gl_logger.find_box(ix, iy)
 
-def uni_plotter(area_points, border_points, L2, title, logger = 0):
+def uni_plotter(area_points, border_points, L2, title, logger = 0, ax = 0):
     """
     Plotting the set of inside and border boxes
     :param area_points: area boxes set
@@ -23,7 +32,8 @@ def uni_plotter(area_points, border_points, L2, title, logger = 0):
     plt.rcParams.update({'font.size': 18})
     left_border = -L2  # Left border of rectangle which we use to build uniform grid
     right_border = L2
-    fig, ax = plt.subplots(figsize=(8, 8))
+    if ax == 0:
+        fig, ax = plt.subplots(figsize=(8, 8))
     x_min, y_min, x_max, y_max = left_border - 1, left_border - 1, right_border + 1, right_border + 1
     ax.set_xlim([x_min, x_max])
     ax.set_ylim([y_min, y_max])
@@ -77,6 +87,17 @@ def iter_plot(s_all, N):
 
 
     plt.show()
+
+
+def plot_all_methods(methods, points, L2, example, L1v = 0, L2v = 0, d = 0):
+    n = len(methods)
+    fig, ax = plt.subplots(1, n, figsize=(20, 10))
+    for i, method in enumerate(methods):
+        uni_plotter(points[method].area_points, points[method].border_points, L2, method, logger=0, ax=ax[i])
+        if example == "2rpr":
+            plot_circles(L1v, L2v, d, ax[i])
+
+
 
 
 
