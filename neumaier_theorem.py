@@ -4,6 +4,7 @@ import interval as ival
 from scipy import optimize
 global boxes
 boxes = []
+from kravchik_operator import function_replacer
 
 class Neumaier_solver:
     def __init__(self, func, U, V, D):
@@ -12,12 +13,13 @@ class Neumaier_solver:
         self.__V = V
         self.__D = D
 
-    def check_box(self, ini_box):
+    def check_box(self, ini_box, ini_value):
         #print("Ini box", ini_box)
         N = len(self.__D)
         check = True
         check1 = []
         box_mid = []
+
         for box in ini_box:
             box_mid.append(box.mid())
         f_root_sym = self.__func.subs([(self.__U[0], box_mid[0]), (self.__U[1], box_mid[1])])
@@ -25,16 +27,28 @@ class Neumaier_solver:
         f_root = sym.lambdify([self.__V], f_root_sym)
         #print(self.__V)
         #print(f_root([0, 0]))
+        self.__func = function_replacer(self.__func)
         f_n = sym.lambdify([self.__V, self.__U], self.__func)
         init = []
         for i in range(N):
-            init.append(5)
+            init.append(ini_value)
         result = optimize.root(f_root, init, method='anderson', tol=1e-12)
-        X = result.x
+        X = -result.x
         #print(X)
-        X1 = ival.valueToInterval(X[0])
-        X2 = ival.valueToInterval(X[1])
-        if result.success and X1.isIn(self.__D[0]) and X2.isIn(self.__D[1]):
+        # X1 = ival.valueToInterval(X[0])
+        # X2 = ival.valueToInterval(X[1])
+        # if result.success and X1.isIn(self.__D[0]) and X2.isIn(self.__D[1]):
+        #     check = True
+        # else:
+        #     check = False
+        check2 = np.full(N, False)
+        for i in range(N):
+            x = ival.valueToInterval(X[i])
+            if x.isIn(self.__D[i]):
+                check2[i] = True
+            # else:
+            #     check2.append(False)
+        if result.success and np.all(check2):
             check = True
         else:
             check = False
@@ -45,10 +59,26 @@ class Neumaier_solver:
         #     check = False
         # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1][1]], [ini_box[0], ini_box[1]])))
-        check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
-        check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][1]], [ini_box[0], ini_box[1]])))
-        check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1]], [ini_box[0], ini_box[1]])))
-        check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1]], [ini_box[0], ini_box[1]])))
+        # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
+        # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][1]], [ini_box[0], ini_box[1]])))
+        # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1]], [ini_box[0], ini_box[1]])))
+        # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1]], [ini_box[0], ini_box[1]])))
+        import itertools as it
+
+        for j in range(N):
+            arrays = []
+            fixed = j
+            for i in range(N):
+                if i != fixed:
+                    arrays.append([self.__D[fixed][0], self.__D[fixed][1]])
+                else:
+                    arrays.append([self.__D[fixed]])
+            variants = list(it.product(*arrays))
+            for var in variants:
+                var = list(var)
+                # print(var)
+                check1.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
+
         #print(f_root_sym)
         #print(check1, check)
         if np.all(check1) and check:

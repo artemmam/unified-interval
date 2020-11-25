@@ -40,7 +40,7 @@ L1v = 0  # Lower range of row
 L2v = 2*pi   # Upper range of row
 d = 60  # Distance between actuators
 l_a = l_d = 72
-l_b = l_c = 87
+l_b = l_c = 20
 v1 = ival.Interval([L1v, L2v])
 v2 = ival.Interval([L1v, L2v])
 v3 = ival.Interval([L1v, L2v])
@@ -59,7 +59,7 @@ ns_1d = Neumaier_solver(f, U, V, D)
 box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
 all_boxes = make_boxes_list(grid, size)
 for box in (all_boxes):
-    if ns_1d.check_box(box):
+    if ns_1d.check_box(box, np.pi):
         neumaier_boxes.append(box)
 uni_plotter(neumaier_boxes, [], L2u, "neumaier", 0)
 # ext_calcul = ClassicalKrawczykCalcul(f, U, V)

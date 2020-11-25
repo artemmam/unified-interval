@@ -61,7 +61,7 @@ box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
 all_boxes = make_boxes_list(grid, size)
 start_neumaier = time.time()
 for box in (all_boxes):
-    if ns_1d.check_box(box):
+    if ns_1d.check_box(box, 5):
         neumaier_boxes.append(box)
 # uni_plotter(neumaier_boxes, [], L2u, "Neumaier")
 # plot_circles(L1v, L2v, d)
