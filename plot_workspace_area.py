@@ -53,7 +53,9 @@ def uni_plotter(area_points, border_points, L2, title, logger = 0, ax = 0):
                           border_points[i][1][1] - border_points[i][1][0],
                           fill=True, fc='yellow', color='black', linewidth=1.0, alpha=1)
         ax.add_patch(rect2)
-    ax.set_title(title)
+    ax.set_title(title, fontsize=12)
+    ax.tick_params(axis='both', which='major', labelsize=10)
+    ax.tick_params(axis='both', which='minor', labelsize=8)
     if logger!=0:
         cid = fig.canvas.mpl_connect('button_press_event', onclick)
 
@@ -91,11 +93,14 @@ def iter_plot(s_all, N):
 
 def plot_all_methods(methods, points, L2, example, L1v = 0, L2v = 0, d = 0):
     n = len(methods)
-    fig, ax = plt.subplots(n, 1, figsize=(4, 12))
+    fig, ax = plt.subplots(1, n, figsize=(12, 4))
     for i, method in enumerate(methods):
         uni_plotter(points[method].area_points, points[method].border_points, L2, method, logger=0, ax=ax[i])
         if example == "2rpr":
             plot_circles(L1v, L2v, d, ax[i])
+        elif example == "circle":
+            circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+            ax[i].add_patch(circle)
 
 
 

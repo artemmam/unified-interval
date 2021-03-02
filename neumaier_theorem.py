@@ -19,14 +19,10 @@ class Neumaier_solver:
         check = True
         check1 = []
         box_mid = []
-
         for box in ini_box:
             box_mid.append(box.mid())
         f_root_sym = self.__func.subs([(self.__U[0], box_mid[0]), (self.__U[1], box_mid[1])])
-        #print(f_root)
         f_root = sym.lambdify([self.__V], f_root_sym)
-        #print(self.__V)
-        #print(f_root([0, 0]))
         self.__func = function_replacer(self.__func)
         f_n = sym.lambdify([self.__V, self.__U], self.__func)
         init = []
@@ -41,9 +37,6 @@ class Neumaier_solver:
         #     check = True
         # else:
         #     check = False
-        #check2 = []
-        #print(result)
-        #print(self.__D)
         check2 = np.full(N, False) #2-RPR
         for i in range(N):
             x = ival.valueToInterval(X[i])
@@ -63,29 +56,29 @@ class Neumaier_solver:
         #     optimize.fsolve(f_root,  [0, 0])
         # except:
         #     check = False
+        if N ==1:
+            check1.append(self.check_zeros(f_n([self.__D[0][0]], [ini_box[0], ini_box[1]])))
+            check1.append(self.check_zeros(f_n([self.__D[0][1]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1][1]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][1]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1]], [ini_box[0], ini_box[1]])))
-        import itertools as it
-        check_iter_tools = []
-        for j in range(N):
-            arrays = []
-            fixed = j
-            for i in range(N):
-                if i != fixed:
-                    arrays.append([self.__D[fixed][0], self.__D[fixed][1]])
-                else:
-                    arrays.append([self.__D[fixed]])
-            variants = list(it.product(*arrays))
-            for var in variants:
-                var = list(var)
-                # print(var)
-                check1.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
-
-        #print(check1 == check_iter_tools)
+        else:
+            import itertools as it
+            for j in range(N):
+                arrays = []
+                fixed = j
+                for i in range(N):
+                    if i != fixed:
+                        arrays.append([self.__D[fixed][0], self.__D[fixed][1]])
+                    else:
+                        arrays.append([self.__D[fixed]])
+                variants = list(it.product(*arrays))
+                for var in variants:
+                    var = list(var)
+                    check1.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
         if np.all(check1) and check:
             return True
         else:

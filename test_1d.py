@@ -1,7 +1,7 @@
 import sympy as sym
 import interval as ival
 from interval_checker import classical_checker
-from plot_workspace_area import uni_plotter, iter_plot
+from plot_workspace_area import uni_plotter, iter_plot, plot_all_methods
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
 from interval_checker import S_class
 from results_func import *
@@ -9,6 +9,7 @@ from neumaier_theorem import Neumaier_solver
 from check_box import make_boxes_list
 import time
 import warnings
+from all_boxes_class import AllBoxes
 warnings.filterwarnings("ignore")
 
 def circle_func(x, t):
@@ -53,7 +54,7 @@ box = [ival.Interval([-1, 1]), ival.Interval([-1, 1])]
 all_boxes = make_boxes_list(grid, size)
 start_neumaier = time.time()
 for box in (all_boxes):
-    if ns_1d.check_box(box, 0.5):
+    if ns_1d.check_box(box, 1):
         neumaier_boxes.append(box)
 end_neumaier = time.time()
 neumaier_time = end_neumaier - start_neumaier
@@ -79,21 +80,30 @@ print("TIME")
 print("Classiccal", classical_time)
 print("Bicentered", bic_time)
 print("Neumaier", neumaier_time)
-uni_plotter(neumaier_boxes, [], L2u, "Neumaier")
-circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
-plt.gca().add_patch(circle)
-uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
-circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
-plt.gca().add_patch(circle)
-uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
-circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
-plt.gca().add_patch(circle)
+# uni_plotter(neumaier_boxes, [], L2u, "Neumaier")
+# circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+# plt.gca().add_patch(circle)
+# uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
+# circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+# plt.gca().add_patch(circle)
+# uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
+# circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+# plt.gca().add_patch(circle)
 #coef_test(f, U, V, L2u, V_ival, eps, "Classical", "circle", ch = "c")
 #coef_test(f, U, V, L2u, V_ival, eps, "Bicentered", "circle", ch = "b")
 #work_with_result_coef("Classical", "circle")
 #work_with_result_coef("Bicentered", "circle")
 #iter_plot(np.array(S_class), N)
-
+points = {}
+class_points = AllBoxes("Classical", area_points_uni, border_points_uni)
+bic_points = AllBoxes("Bicentered", area_points_uni_bicen, border_points_uni_bicen)
+neumaier_points = AllBoxes("Neumaier", neumaier_boxes, [])
+points["Classical"] = class_points
+points["Bicentered"] = bic_points
+points["Neumaier"] = neumaier_points
+methods = ["Classical", "Bicentered", "Neumaier"]
+plot_all_methods(methods, points, L2u, "circle")
+plt.show()
 plt.show()
 
 
