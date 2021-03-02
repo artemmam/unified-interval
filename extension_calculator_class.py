@@ -73,6 +73,7 @@ class ExtCalcul:
         """
         param = [U]
         FV = self.fv(V, param)
+        #print(FV)
         M = np.zeros_like(FV)
         for i in range(len(FV)):
             for j in range(len(FV)):

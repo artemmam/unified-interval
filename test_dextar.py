@@ -34,13 +34,13 @@ def func_dextar(l_a, l_b, l_c, l_d, d):
     return f, U, V
 
 
-N = 60  # The number of nodes on uniform grid
+N = 30  # The number of nodes on uniform grid
 ##### 2-RPR
 L1v = 0  # Lower range of row
 L2v = 2*pi   # Upper range of row
 d = 60  # Distance between actuators
 l_a = l_d = 72
-l_b = l_c = 20
+l_b = l_c = 87
 v1 = ival.Interval([L1v, L2v])
 v2 = ival.Interval([L1v, L2v])
 v3 = ival.Interval([L1v, L2v])
@@ -58,19 +58,23 @@ D = [v1, v2, v3, v4]
 ns_1d = Neumaier_solver(f, U, V, D)
 box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
 all_boxes = make_boxes_list(grid, size)
-for box in (all_boxes):
-    if ns_1d.check_box(box, np.pi):
-        neumaier_boxes.append(box)
-uni_plotter(neumaier_boxes, [], L2u, "neumaier", 0)
-# ext_calcul = ClassicalKrawczykCalcul(f, U, V)
-# #ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
-# classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
-# area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-#                                                classical_checker, ext_calcul, eps)
-# #area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
-# #                                               classical_checker, ext_calcul_bicentered, eps)
-# uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger)
-# #uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk")
+# for box in (all_boxes):
+#     if ns_1d.check_box(box, np.pi):
+#         neumaier_boxes.append(box)
+# uni_plotter(neumaier_boxes, [], L2u, "neumaier", 0)
+# from neumaier_theorem import boxes
+# ns_1d.find_box(box, 0, np.pi)
+# uni_plotter(boxes, [], L2u, "neumaier", 0)
+
+ext_calcul = ClassicalKrawczykCalcul(f, U, V)
+ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
+classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
+area_points_uni, border_points_uni = check_box(grid, size, V_ival,
+                                               classical_checker, ext_calcul, eps)
+area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
+                                              classical_checker, ext_calcul_bicentered, eps)
+uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger)
+uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger)
 #
 # #iter_plot(np.array(S_class), N)
 plt.show()

@@ -40,7 +40,7 @@ def func_2rpr(d):
     return f, U, V
 
 
-N = 32  # The number of nodes on uniform grid
+N = 30  # The number of nodes on uniform grid
 ##### 2-RPR
 L1v = 3  # Lower range of row
 L2v = 15  # Upper range of row
@@ -63,8 +63,8 @@ start_neumaier = time.time()
 for box in (all_boxes):
     if ns_1d.check_box(box, 5):
         neumaier_boxes.append(box)
-# uni_plotter(neumaier_boxes, [], L2u, "Neumaier")
-# plot_circles(L1v, L2v, d)
+uni_plotter(neumaier_boxes, [], L2u, "Neumaier")
+plot_circles(L1v, L2v, d)
 eps = 1e-3  # accuracy
 coef = 1.5
 
@@ -94,7 +94,7 @@ points["Classical"] = class_points
 points["Bicentered"] = bic_points
 points["Neumaier"] = neumaier_points
 methods = ["Classical", "Bicentered", "Neumaier"]
-plot_all_methods(methods, points, L2u, "2rpr", L1v, L2v, d)
+#plot_all_methods(methods, points, L2u, "2rpr", L1v, L2v, d)
 plt.show()
 
 

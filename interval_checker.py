@@ -51,6 +51,7 @@ def classical_checker(box, v_init, eps, ext_calcul, log = False):
                 check = False
                 break
         if abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))) < eps:
+            #print(abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))))
             ch = False
             break
         v_prev = v_ext

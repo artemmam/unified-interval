@@ -98,9 +98,14 @@ class Interval:
 
     def __truediv__(self, other):
         ointerval = valueToInterval(other)
-        v = [self.x[0] / ointerval.x[0], self.x[0] / ointerval.x[1], self.x[1] / ointerval.x[0], self.x[1] / ointerval.x[1]]
-        b = [min(v), max(v)]
-        return Interval(b)
+        if Interval([0, 0]).isIn(ointerval):
+            b1 = self*Interval([-math.inf, other[0]])
+            b2 = self*Interval([other[1], math.inf])
+            return b1, b2
+        else:
+            v = [self.x[0] / ointerval.x[0], self.x[0] / ointerval.x[1], self.x[1] / ointerval.x[0], self.x[1] / ointerval.x[1]]
+            b = [min(v), max(v)]
+            return Interval(b)
 
     def __floordiv__(self, other):
         ointerval = valueToInterval(other)

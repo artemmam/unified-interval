@@ -91,7 +91,7 @@ def iter_plot(s_all, N):
 
 def plot_all_methods(methods, points, L2, example, L1v = 0, L2v = 0, d = 0):
     n = len(methods)
-    fig, ax = plt.subplots(1, n, figsize=(20, 10))
+    fig, ax = plt.subplots(n, 1, figsize=(4, 12))
     for i, method in enumerate(methods):
         uni_plotter(points[method].area_points, points[method].border_points, L2, method, logger=0, ax=ax[i])
         if example == "2rpr":

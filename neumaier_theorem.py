@@ -33,7 +33,7 @@ class Neumaier_solver:
         for i in range(N):
             init.append(ini_value)
         result = optimize.root(f_root, init, method='anderson', tol=1e-12)
-        X = -result.x
+        X = result.x
         #print(X)
         # X1 = ival.valueToInterval(X[0])
         # X2 = ival.valueToInterval(X[1])
@@ -41,13 +41,19 @@ class Neumaier_solver:
         #     check = True
         # else:
         #     check = False
-        check2 = np.full(N, False)
+        #check2 = []
+        #print(result)
+        #print(self.__D)
+        check2 = np.full(N, False) #2-RPR
         for i in range(N):
             x = ival.valueToInterval(X[i])
+            #print(x, x.isIn(self.__D[i]))
             if x.isIn(self.__D[i]):
+                #check2.append(True)
                 check2[i] = True
             # else:
             #     check2.append(False)
+        #print(check2)
         if result.success and np.all(check2):
             check = True
         else:
@@ -64,7 +70,7 @@ class Neumaier_solver:
         # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1]], [ini_box[0], ini_box[1]])))
         # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1]], [ini_box[0], ini_box[1]])))
         import itertools as it
-
+        check_iter_tools = []
         for j in range(N):
             arrays = []
             fixed = j
@@ -79,21 +85,20 @@ class Neumaier_solver:
                 # print(var)
                 check1.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
 
-        #print(f_root_sym)
-        #print(check1, check)
+        #print(check1 == check_iter_tools)
         if np.all(check1) and check:
             return True
         else:
             return False
 
-    def find_box(self, ini_box, i):
+    def find_box(self, ini_box, i, ini_value):
         check = True
         # print(i)
         for box in ini_box:
-            if (box[1] - box[0]) < 0.01:
+            if (box[1] - box[0]) < 3:
                 check = False
         if check:
-            if not (self.check_box(ini_box)):
+            if not (self.check_box(ini_box, ini_value)):
                 if i == 0:
                     box1 = [ival.Interval([ini_box[0][0], (ini_box[0][1] + ini_box[0][0]) / 2]), ini_box[1]]
                     box2 = [ival.Interval([(ini_box[0][0] + ini_box[0][1]) / 2, ini_box[0][1]]), ini_box[1]]
@@ -104,11 +109,12 @@ class Neumaier_solver:
                     box2 = [ini_box[0], ival.Interval([(ini_box[1][1] + ini_box[1][0]) / 2, ini_box[1][1]])]
                     i = 0
                 # print("Enter box1")
-                self.find_box(box1, i)
+                self.find_box(box1, i, ini_value)
                 # print("Enter box2")
-                self.find_box(box2, i)
+                self.find_box(box2, i, ini_value)
             else:
-                # print("Find")
+                print("Find")
+                print(ini_box)
                 boxes.append(ini_box)
 
 

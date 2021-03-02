@@ -16,7 +16,7 @@ def circle_func(x, t):
 
 def func_1d():
     """
-    Creating symbol variables for 2-RPR eq. system
+    Creating symbol variables for circle eq. system
     :return: symbolic eq. system,
             symbolic U (fixed boxes),
             symbolic V (checking boxes),
@@ -25,7 +25,8 @@ def func_1d():
     """
     V = [sym.symbols('v1')]
     U = sym.symbols('u1, u2')
-    f = sym.Matrix([(U[0] )** 2 + (U[1])** 2 + V[0] ** 2 - 1])
+    f = sym.Matrix([(U[0]) ** 2 +
+                    (U[1]) ** 2 + V[0] ** 2 - 1])
     return f, U, V
 
 
@@ -52,7 +53,7 @@ box = [ival.Interval([-1, 1]), ival.Interval([-1, 1])]
 all_boxes = make_boxes_list(grid, size)
 start_neumaier = time.time()
 for box in (all_boxes):
-    if ns_1d.check_box(box):
+    if ns_1d.check_box(box, 0.5):
         neumaier_boxes.append(box)
 end_neumaier = time.time()
 neumaier_time = end_neumaier - start_neumaier
@@ -91,7 +92,7 @@ plt.gca().add_patch(circle)
 #coef_test(f, U, V, L2u, V_ival, eps, "Bicentered", "circle", ch = "b")
 #work_with_result_coef("Classical", "circle")
 #work_with_result_coef("Bicentered", "circle")
-iter_plot(np.array(S_class), N)
+#iter_plot(np.array(S_class), N)
 
 plt.show()
 
