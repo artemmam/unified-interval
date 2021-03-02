@@ -17,9 +17,13 @@ def make_boxes_list(grid, dim):
             if i % grid_size == 0 and i != 0 and j == 0:
                 fix += 1
             if j == 0:
-                U.append(ival.Interval([grid[i % grid_size], grid[i % grid_size + 1]]))
+                U.append(ival.Interval([grid[i % grid_size], grid[i % grid_size + 1], 1]))
             else:
                 U.append(ival.Interval([grid[fix % grid_size], grid[fix % grid_size + 1]]))
+            # if j == 0:
+            #     U.append(ival.Interval([np.round(grid[i % grid_size], 1), np.round(grid[i % grid_size + 1], 1)]))
+            # else:
+            #     U.append(ival.Interval([np.round(grid[fix % grid_size], 1), np.round(grid[fix % grid_size + 1], 1)]))
     return np.reshape(U, (grid_size ** dim, dim))
 
 

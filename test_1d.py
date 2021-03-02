@@ -40,6 +40,7 @@ V_ival = [v1]  # interval vector V
 L2u = 1.1  # the width of the of the 2-dimensional square
 #derived_reccurent_form = derived_reccurent_form(f, V, U, Vmid)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
+#print(grid)
 size = 2  # The dimension of uniform grid
 eps = 1e-3  # accuracy
 coef = 2  # Coefficient
@@ -47,15 +48,19 @@ coef = 2  # Coefficient
 ### Neumaier solve
 
 neumaier_boxes = []
+neumaier_boxes_out = []
 D = [ival.Interval([0, 1.2])]
 ns_1d = Neumaier_solver(f, U, V, D)
 box = [ival.Interval([-1, 1]), ival.Interval([-1, 1])]
 #neumaier_boxes = ns_1d.solve(box)
 all_boxes = make_boxes_list(grid, size)
+#print(all_boxes)
 start_neumaier = time.time()
 for box in (all_boxes):
-    if ns_1d.check_box(box, 1):
+    if ns_1d.check_box(box, 1) == True:
         neumaier_boxes.append(box)
+    elif ns_1d.check_box(box, 1) == "border":
+        neumaier_boxes_out.append(box)
 end_neumaier = time.time()
 neumaier_time = end_neumaier - start_neumaier
 
@@ -80,9 +85,9 @@ print("TIME")
 print("Classiccal", classical_time)
 print("Bicentered", bic_time)
 print("Neumaier", neumaier_time)
-# uni_plotter(neumaier_boxes, [], L2u, "Neumaier")
-# circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
-# plt.gca().add_patch(circle)
+uni_plotter(neumaier_boxes, neumaier_boxes_out, L2u, "Neumaier")
+circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+plt.gca().add_patch(circle)
 # uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 # circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 # plt.gca().add_patch(circle)
@@ -97,13 +102,12 @@ print("Neumaier", neumaier_time)
 points = {}
 class_points = AllBoxes("Classical", area_points_uni, border_points_uni)
 bic_points = AllBoxes("Bicentered", area_points_uni_bicen, border_points_uni_bicen)
-neumaier_points = AllBoxes("Neumaier", neumaier_boxes, [])
+neumaier_points = AllBoxes("Neumaier", neumaier_boxes, neumaier_boxes_out)
 points["Classical"] = class_points
 points["Bicentered"] = bic_points
 points["Neumaier"] = neumaier_points
 methods = ["Classical", "Bicentered", "Neumaier"]
 plot_all_methods(methods, points, L2u, "circle")
-plt.show()
 plt.show()
 
 
