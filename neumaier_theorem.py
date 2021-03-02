@@ -16,7 +16,6 @@ class Neumaier_solver:
     def check_box(self, ini_box, ini_value):
         #print("Ini box", ini_box)
         N = len(self.__D)
-        check = True
         check1 = []
         box_mid = []
         for box in ini_box:
@@ -30,41 +29,18 @@ class Neumaier_solver:
             init.append(ini_value)
         result = optimize.root(f_root, init, method='anderson', tol=1e-12)
         X = result.x
-        #print(X)
-        # X1 = ival.valueToInterval(X[0])
-        # X2 = ival.valueToInterval(X[1])
-        # if result.success and X1.isIn(self.__D[0]) and X2.isIn(self.__D[1]):
-        #     check = True
-        # else:
-        #     check = False
-        check2 = np.full(N, False) #2-RPR
+        check2 = np.full(N, False)
         for i in range(N):
             x = ival.valueToInterval(X[i])
-            #print(x, x.isIn(self.__D[i]))
             if x.isIn(self.__D[i]):
-                #check2.append(True)
                 check2[i] = True
-            # else:
-            #     check2.append(False)
-        #print(check2)
         if result.success and np.all(check2):
             check = True
         else:
             check = False
-        # try:
-        #     #optimize.bisect(f_root, self.__D[0], self.__D[1])
-        #     optimize.fsolve(f_root,  [0, 0])
-        # except:
-        #     check = False
         if N ==1:
             check1.append(self.check_zeros(f_n([self.__D[0][0]], [ini_box[0], ini_box[1]])))
             check1.append(self.check_zeros(f_n([self.__D[0][1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1][1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1]], [ini_box[0], ini_box[1]])))
         else:
             import itertools as it
             for j in range(N):

@@ -86,8 +86,6 @@ def iter_plot(s_all, N):
     for im in ax:
         im.set_norm(norm)
     cbar1 = grid.cbar_axes[0].colorbar(ax1)
-
-
     plt.show()
 
 
