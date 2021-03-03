@@ -9,6 +9,7 @@ from kravchik_operator import function_replacer
 class Neumaier_solver:
     def __init__(self, func, U, V, D):
         self.__func = func
+        print(func)
         self.__U = U
         self.__V = V
         self.__D = D
@@ -32,13 +33,23 @@ class Neumaier_solver:
         X = result.x
         circle_ival = f_n(self.__D, ini_box).reshape(-1)
         #print(ini_box, circle_ival)
+        check3 = []
+
         for i in range(len(circle_ival)):
+
             if ival.Interval([0, 0]).isIn(circle_ival[i]):
-                pass
+                check3.append(True)
                 # return "border"
             else:
+                check3.append(False)
+                break
                 #pass
-                return "out"
+                #return "out"
+        if not np.all(check3):
+            #print("out")
+            return "out"
+
+
         #print(X)
         # X1 = ival.valueToInterval(X[0])
         # X2 = ival.valueToInterval(X[1])
@@ -46,6 +57,12 @@ class Neumaier_solver:
         #     check = True
         # else:
         #     check = False
+        check2 = []
+        for i in range(N):
+            x = ival.valueToInterval(abs(X[i]))
+            if x.isIn(self.__D[i]):
+                check2.append(True)
+        """
         check2 = np.full(N, False) #2-RPR
         for i in range(N):
             x = ival.valueToInterval(X[i])
@@ -53,6 +70,7 @@ class Neumaier_solver:
             if x.isIn(self.__D[i]):
                 #check2.append(True)
                 check2[i] = True
+        """
             # else:
             #     check2.append(False)
         #print(check2)
@@ -91,6 +109,10 @@ class Neumaier_solver:
         if np.all(check1) and check:
             return "in"
         else:
+            print(ini_box)
+            print(check1)
+            print(check, result.success, check2)
+            print(circle_ival)
             return "border"
 
     def find_box(self, ini_box, i, ini_value):

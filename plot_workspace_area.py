@@ -34,7 +34,7 @@ def uni_plotter(area_points, border_points, L2, title, logger = 0, ax = 0):
     right_border = L2
     if ax == 0:
         fig, ax = plt.subplots(figsize=(8, 8))
-    x_min, y_min, x_max, y_max = left_border - 1, left_border - 1, right_border + 1, right_border + 1
+    x_min, y_min, x_max, y_max = left_border - L2/10, left_border - L2/10, right_border + L2/10, right_border + L2/10
     ax.set_xlim([x_min, x_max])
     ax.set_ylim([y_min, y_max])
     rect1 = Rectangle([left_border, left_border], 2*right_border, 2*right_border, fill=False, color='g',

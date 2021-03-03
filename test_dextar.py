@@ -34,7 +34,7 @@ def func_dextar(l_a, l_b, l_c, l_d, d):
     return f, U, V
 
 
-N = 15  # The number of nodes on uniform grid
+N = 20  # The number of nodes on uniform grid
 ##### 2-RPR
 L1v = 0  # Lower range of row
 L2v = 2*pi   # Upper range of row
@@ -47,7 +47,7 @@ v3 = ival.Interval([L1v, L2v])
 v4 = ival.Interval([L1v, L2v])
 V_ival = [v1, v2, v3, v4]
 
-L2u = l_a + l_b + d   # the width of the 2-dimensional square
+L2u = l_a + l_b + d+20   # the width of the 2-dimensional square
 f, U, V = func_dextar(l_a, l_b, l_c, l_d, d)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
@@ -64,7 +64,10 @@ for box in (all_boxes):
     if ch == "in":
         neumaier_boxes.append(box)
     elif ch =="border":
+        #print("border ", box)
         neumaier_boxes_border.append(box)
+    #else:
+        #print("out", box)
 #uni_plotter(neumaier_boxes, [], L2u, "neumaier", 0)
 # from neumaier_theorem import boxes
 # ns_1d.find_box(box, 0, np.pi)
