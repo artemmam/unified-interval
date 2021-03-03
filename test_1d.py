@@ -32,7 +32,7 @@ def func_1d():
 
 
 
-N = 10  # The number of boxes on uniform grid
+N = 60  # The number of boxes on uniform grid
 ##### 1d circle
 f, U, V = func_1d()
 v1 = ival.Interval([0., 1.2])  # Set the interval for v1
@@ -48,7 +48,7 @@ coef = 2  # Coefficient
 ### Neumaier solve
 
 neumaier_boxes = []
-neumaier_boxes_out = []
+neumaier_boxes_border = []
 D = [ival.Interval([0, 1.2])]
 ns_1d = Neumaier_solver(f, U, V, D)
 box = [ival.Interval([-1, 1]), ival.Interval([-1, 1])]
@@ -57,10 +57,11 @@ all_boxes = make_boxes_list(grid, size)
 #print(all_boxes)
 start_neumaier = time.time()
 for box in (all_boxes):
-    if ns_1d.check_box(box, 1) == True:
+    ch = ns_1d.check_box(box, 1)
+    if ch == "in":
         neumaier_boxes.append(box)
     elif ns_1d.check_box(box, 1) == "border":
-        neumaier_boxes_out.append(box)
+        neumaier_boxes_border.append(box)
 end_neumaier = time.time()
 neumaier_time = end_neumaier - start_neumaier
 
@@ -85,9 +86,9 @@ print("TIME")
 print("Classiccal", classical_time)
 print("Bicentered", bic_time)
 print("Neumaier", neumaier_time)
-uni_plotter(neumaier_boxes, neumaier_boxes_out, L2u, "Neumaier")
-circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
-plt.gca().add_patch(circle)
+# uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "Neumaier")
+# circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
+# plt.gca().add_patch(circle)
 # uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk")
 # circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 # plt.gca().add_patch(circle)
@@ -102,7 +103,7 @@ plt.gca().add_patch(circle)
 points = {}
 class_points = AllBoxes("Classical", area_points_uni, border_points_uni)
 bic_points = AllBoxes("Bicentered", area_points_uni_bicen, border_points_uni_bicen)
-neumaier_points = AllBoxes("Neumaier", neumaier_boxes, neumaier_boxes_out)
+neumaier_points = AllBoxes("Neumaier", neumaier_boxes, neumaier_boxes_border)
 points["Classical"] = class_points
 points["Bicentered"] = bic_points
 points["Neumaier"] = neumaier_points

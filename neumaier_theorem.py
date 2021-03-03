@@ -38,7 +38,7 @@ class Neumaier_solver:
                 # return "border"
             else:
                 #pass
-                return "border"
+                return "out"
         #print(X)
         # X1 = ival.valueToInterval(X[0])
         # X2 = ival.valueToInterval(X[1])
@@ -89,9 +89,9 @@ class Neumaier_solver:
                     var = list(var)
                     check1.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
         if np.all(check1) and check:
-            return True
+            return "in"
         else:
-            return False
+            return "border"
 
     def find_box(self, ini_box, i, ini_value):
         check = True
