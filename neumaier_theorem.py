@@ -4,7 +4,8 @@ import interval as ival
 from scipy import optimize
 global boxes
 boxes = []
-from kravchik_operator import function_replacer
+from kravchik_operator import function_replacer, centered_form
+from extension_calculator_class import ExtCalcul
 
 class Neumaier_solver:
     def __init__(self, func, U, V, D):
@@ -13,12 +14,17 @@ class Neumaier_solver:
         self.__U = U
         self.__V = V
         self.__D = D
+        self.__centered_calcul = ExtCalcul(self.__func, self.__U, self.__V)
+
 
     def check_box(self, ini_box, ini_value):
-        #print("Ini box", ini_box)
+        """
+        :param ini_box: checked box
+        :param ini_value: starting value for root-finding
+        :return: "in" -- the box is inside, "out" -- the box is outside, "border" -- the box is on the border
+        """
         N = len(self.__D)
-        check = True
-        check1 = []
+        check_borders = []
         box_mid = []
         for box in ini_box:
             box_mid.append(box.mid())
@@ -29,69 +35,47 @@ class Neumaier_solver:
         init = []
         for i in range(N):
             init.append(ini_value)
+        # Find adn check roots root
         result = optimize.root(f_root, init, method='anderson', tol=1e-12)
         X = result.x
-        circle_ival = f_n(self.__D, ini_box).reshape(-1)
-        #print(ini_box, circle_ival)
-        check3 = []
-
-        for i in range(len(circle_ival)):
-
-            if ival.Interval([0, 0]).isIn(circle_ival[i]):
-                check3.append(True)
-                # return "border"
-            else:
-                check3.append(False)
-                break
-                #pass
-                #return "out"
-        if not np.all(check3):
-            #print("out")
-            return "out"
-
-
-        #print(X)
-        # X1 = ival.valueToInterval(X[0])
-        # X2 = ival.valueToInterval(X[1])
-        # if result.success and X1.isIn(self.__D[0]) and X2.isIn(self.__D[1]):
-        #     check = True
-        # else:
-        #     check = False
-        check2 = []
+        check_in_roots = []
         for i in range(N):
             x = ival.valueToInterval(abs(X[i]))
             if x.isIn(self.__D[i]):
-                check2.append(True)
-        """
-        check2 = np.full(N, False) #2-RPR
-        for i in range(N):
-            x = ival.valueToInterval(X[i])
-            #print(x, x.isIn(self.__D[i]))
-            if x.isIn(self.__D[i]):
-                #check2.append(True)
-                check2[i] = True
-        """
-            # else:
-            #     check2.append(False)
-        #print(check2)
-        if result.success and np.all(check2):
-            check = True
+                check_in_roots.append(True)
+        if result.success and np.all(check_in_roots):
+            check_root = True
         else:
-            check = False
-        # try:
-        #     #optimize.bisect(f_root, self.__D[0], self.__D[1])
-        #     optimize.fsolve(f_root,  [0, 0])
-        # except:
-        #     check = False
-        if N ==1:
-            check1.append(self.check_zeros(f_n([self.__D[0][0]], [ini_box[0], ini_box[1]])))
-            check1.append(self.check_zeros(f_n([self.__D[0][1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1][1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][0]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0], self.__D[1][1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][0], self.__D[1]], [ini_box[0], ini_box[1]])))
-        # check1.append(self.check_zeros(f_n([self.__D[0][1], self.__D[1]], [ini_box[0], ini_box[1]])))
+            check_root = False
+        ### Finding zero in interval evalutaions
+        f_n_init = f_n(self.__D, ini_box).reshape(-1)
+        C_left = []
+        C_right = []
+        for i in range(len(self.__D)):
+            for j in range(len(self.__D)):
+                C_left.append(self.__D[i][0])
+                C_right.append(self.__D[i][1])
+        ### Bicentered evaluation
+        C_min_bicen, C_max_bicen = self.__centered_calcul.calcul_new_c(self.__D, box)
+        C_min_bicen = C_min_bicen.reshape(len(self.__D) * len(self.__D))
+        C_max_bicen = C_max_bicen.reshape(len(self.__D) * len(self.__D))
+        f_ext_min_bicen, f_ext_max_bicen = self.__centered_calcul.calculated_centered_form(ini_box, self.__D, C_min_bicen).reshape(-1), \
+                               self.__centered_calcul.calculated_centered_form(ini_box, self.__D, C_max_bicen).reshape(-1)
+        ### Mean-valued evaluation
+        f_n_init_centered_right = self.__centered_calcul.calculated_centered_form(ini_box, self.__D, C_right).reshape(-1)
+        f_n_init_centered_left = self.__centered_calcul.calculated_centered_form(ini_box, self.__D, C_left).reshape(-1)
+        f_n_init_centered = []
+        f_ext_bicen = []
+        for i in range(len(f_n_init_centered_left)):
+            f_n_init_centered.append(f_n_init_centered_left[i].intersec(f_n_init_centered_right[i]))
+            f_ext_bicen.append(f_ext_min_bicen[i].intersec(f_ext_max_bicen[i]))
+            if not ival.Interval([0, 0]).isIn(f_n_init[i]):#(f_n_init_centered_left[i].intersec(f_n_init_centered_right[i])):
+                return "out"
+
+        ### Check zeros on borders
+        if N == 1:
+            check_borders.append(self.check_zeros(f_n([self.__D[0][0]], [ini_box[0], ini_box[1]])))
+            check_borders.append(self.check_zeros(f_n([self.__D[0][1]], [ini_box[0], ini_box[1]])))
         else:
             import itertools as it
             for j in range(N):
@@ -105,53 +89,22 @@ class Neumaier_solver:
                 variants = list(it.product(*arrays))
                 for var in variants:
                     var = list(var)
-                    check1.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
-        if np.all(check1) and check:
+                    check_borders.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
+        if np.all(check_borders) and check_root:
             return "in"
         else:
-            print(ini_box)
-            print(check1)
-            print(check, result.success, check2)
-            print(circle_ival)
+            # print("Ini box", ini_box)
+            # print("F(u, v) = ", f_n_init)
+            # print("Centered F(u, v) = ", f_n_init_centered)
+            # print("Bicen = ", f_ext_bicen)
             return "border"
-
-    def find_box(self, ini_box, i, ini_value):
-        check = True
-        # print(i)
-        for box in ini_box:
-            if (box[1] - box[0]) < 3:
-                check = False
-        if check:
-            if not (self.check_box(ini_box, ini_value)):
-                if i == 0:
-                    box1 = [ival.Interval([ini_box[0][0], (ini_box[0][1] + ini_box[0][0]) / 2]), ini_box[1]]
-                    box2 = [ival.Interval([(ini_box[0][0] + ini_box[0][1]) / 2, ini_box[0][1]]), ini_box[1]]
-                    i = 1
-                else:
-                    # TO DO HERE
-                    box1 = [ini_box[0], ival.Interval([ini_box[1][0], (ini_box[1][1] + ini_box[1][0]) / 2])]
-                    box2 = [ini_box[0], ival.Interval([(ini_box[1][1] + ini_box[1][0]) / 2, ini_box[1][1]])]
-                    i = 0
-                # print("Enter box1")
-                self.find_box(box1, i, ini_value)
-                # print("Enter box2")
-                self.find_box(box2, i, ini_value)
-            else:
-                print("Find")
-                print(ini_box)
-                boxes.append(ini_box)
-
-
 
     def check_zeros(self, a):
         a = a.reshape(-1)
         a = a.reshape(-1)
-        #print("a", a)
-        #a = a[0]
         tmp = True
         for i in range(len(a)):
             ai = a[i]
-            #print("ai", ai)
             if (0 < ai[0] or 0 > ai[1]):
                 tmp = True
                 break

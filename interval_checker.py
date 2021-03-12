@@ -1,6 +1,14 @@
 import numpy as np
 from interval import Interval
 S_class = []
+PI2 = 2*np.pi
+
+
+def interval_radian(x):
+    l = []
+    for a in x:
+        l.append(a%PI2)
+    return Interval([min(l), max(l)])
 
 
 def diam(A):
@@ -22,8 +30,6 @@ def classical_checker(box, v_init, eps, ext_calcul, log = False):
              "border" if it is on the border of solution
              "outside" if it doesn't have intersection with solution
     """
-    #[[-5.0, -4.0][3.0, 4.0]]
-    #print("Box", box)
     v_iter = v_init.copy()
     n = len(v_init)
     ch = True
@@ -51,7 +57,6 @@ def classical_checker(box, v_init, eps, ext_calcul, log = False):
                 check = False
                 break
         if abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))) < eps:
-            #print(abs(diam(v_ext) - diam(v_prev))/(0.5*abs(diam(v_ext) + diam(v_prev))))
             ch = False
             break
         v_prev = v_ext

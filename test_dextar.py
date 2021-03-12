@@ -59,28 +59,22 @@ D = [v1, v2, v3, v4]
 ns_1d = Neumaier_solver(f, U, V, D)
 box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
 all_boxes = make_boxes_list(grid, size)
-for box in (all_boxes):
+for box in all_boxes:
     ch = ns_1d.check_box(box, np.pi)
     if ch == "in":
         neumaier_boxes.append(box)
     elif ch =="border":
-        #print("border ", box)
         neumaier_boxes_border.append(box)
-    #else:
-        #print("out", box)
-#uni_plotter(neumaier_boxes, [], L2u, "neumaier", 0)
-# from neumaier_theorem import boxes
-# ns_1d.find_box(box, 0, np.pi)
 uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", 0)
 
-# ext_calcul = ClassicalKrawczykCalcul(f, U, V)
+ext_calcul = ClassicalKrawczykCalcul(f, U, V)
 # ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
-# classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
-# area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-#                                                classical_checker, ext_calcul, eps)
+classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
+area_points_uni, border_points_uni = check_box(grid, size, V_ival,
+                                               classical_checker, ext_calcul, eps)
 # area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
 #                                               classical_checker, ext_calcul_bicentered, eps)
-# uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger)
+uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger)
 # uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger)
 #
 # #iter_plot(np.array(S_class), N)

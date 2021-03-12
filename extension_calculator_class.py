@@ -1,5 +1,5 @@
 import numpy as np
-from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form
+from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form, centered_form
 import sympy as sym
 import interval as ival
 
@@ -56,19 +56,16 @@ class ExtCalcul:
         :return: numeric Krawczyk operator calculation function
         """
         c = []
-        lam = []
         for i in range(len(self.v)):
             for j in range(len(self.v)):
                 c.append(sym.symbols("c" + str(i) + str(j)))
-                lam.append(sym.symbols("lam" + str(i) + str(j)))
-        return krawczyk_eval(self.f, self.u, self.v, lam, c)
+        return centered_form(self.f, self.v, c, self.u)
 
     def calculate_lam(self, V, U, coef=1):
         """
         Function for calculation matrix lambda (L = (mid(F'))**-1)
         :param V: variables
         :param U: box to check
-        :param coef: coefficient for varying lambda
         :return: matrix lambda
         """
         param = [U]
@@ -84,8 +81,57 @@ class ExtCalcul:
         else:
             return np.linalg.inv(M).reshape(len(V)*len(V))
 
+    def calcul_new_c(self, V, box):
+        """
+        Function for calculation cmin and cmax for bicentered evaluation
+        :param V: variables for checking
+        :param box: box to check
+        :return: intervals c_min and c_max
+        """
+        param = [box]
+        new_v = self.fv(V, param)
+        new_v = new_v.reshape(len(V), len(V))
+        n = len(new_v)
+        c_max = np.zeros_like(new_v)
+        c_min = np.zeros_like(new_v)
+        for i in range(n):
+            for j in range(n):
+                new_v[i][j] = ival.valueToInterval(new_v[i][j])
+                if new_v[i][j][1] <= 0:
+                    c_min[i][j] = V[j][1]
+                elif new_v[i][j][0] >= 0:
+                    c_min[i][j] = V[j][0]
+                else:
+                    c_min[i][j] = (new_v[i][j][1] * V[j][0] - new_v[i][j][0] * V[j][1]) / (new_v[i][j][1] - new_v[i][j][0])
+        for i in range(n):
+            for j in range(n):
+                if new_v[i][j][1] <= 0:
+                    c_max[i][j] = V[j][0]
+                elif new_v[i][j][0] >= 0:
+                    c_max[i][j] = V[j][1]
+                else:
+                    c_max[i][j] = (new_v[i][j][0] * V[j][0] - new_v[i][j][1] * V[j][1]) / (new_v[i][j][0] - new_v[i][j][1])
+        return c_min, c_max
+
+    def calculated_centered_form(self, box, V, C = []):
+        param = box
+        C = np.array(C).reshape(len(V), len(V)).T.reshape(len(V) * len(V))
+        return np.array(self.func(V, C, param))
+
 
 class ClassicalKrawczykCalcul(ExtCalcul):
+    def func_calcul(self):
+        """
+        Function for transformation symbolic Krawczyk operator function into numeric
+        :return: numeric Krawczyk operator calculation function
+        """
+        c = []
+        lam = []
+        for i in range(len(self.v)):
+            for j in range(len(self.v)):
+                c.append(sym.symbols("c" + str(i) + str(j)))
+                lam.append(sym.symbols("lam" + str(i) + str(j)))
+        return krawczyk_eval(self.f, self.u, self.v, lam, c)
 
     def calculate_extension(self, box, V):
         """
@@ -118,6 +164,19 @@ class BicenteredKrawczykCalcul(ExtCalcul):
     @property
     def g(self):
         return self.__g
+
+    def func_calcul(self):
+        """
+        Function for transformation symbolic Krawczyk operator function into numeric
+        :return: numeric Krawczyk operator calculation function
+        """
+        c = []
+        lam = []
+        for i in range(len(self.v)):
+            for j in range(len(self.v)):
+                c.append(sym.symbols("c" + str(i) + str(j)))
+                lam.append(sym.symbols("lam" + str(i) + str(j)))
+        return krawczyk_eval(self.f, self.u, self.v, lam, c)
 
     def derived_recurrent_form_calcul(self):
         """

@@ -60,7 +60,7 @@ for box in (all_boxes):
     ch = ns_1d.check_box(box, 1)
     if ch == "in":
         neumaier_boxes.append(box)
-    elif ns_1d.check_box(box, 1) == "border":
+    elif ch == "border":
         neumaier_boxes_border.append(box)
 end_neumaier = time.time()
 neumaier_time = end_neumaier - start_neumaier

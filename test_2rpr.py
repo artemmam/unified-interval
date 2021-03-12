@@ -2,7 +2,7 @@ import sympy as sym
 import interval as ival
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter, iter_plot, plot_all_methods
-from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
+from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul, ExtCalcul
 from results_func import *
 from interval_checker import S_class
 from log_functions import Logger
@@ -52,7 +52,6 @@ L2u = L2v   # the width of the 2-dimensional square
 f, U, V = func_2rpr(d)
 grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
-
 ### Neumaier solve
 neumaier_boxes = []
 neumaier_boxes_border = []

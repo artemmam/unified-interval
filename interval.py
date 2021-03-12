@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 
 class Interval:
 
@@ -140,9 +140,9 @@ def valueToInterval(expr):
     return etmp
 
 def sin(x):
-    if isinstance(x, int):
+    if isinstance(x, (int, np.integer)):
         return math.sin(x)
-    elif isinstance(x, float):
+    elif isinstance(x, (float, np.float)):
         return math.sin(x)
     else:
         y = [math.sin(x[0]), math.sin(x[1])]
@@ -161,9 +161,9 @@ def sin(x):
 
 
 def cos(x):
-    if isinstance(x, int):
+    if isinstance(x, (int, np.integer)):
         return math.cos(x)
-    elif isinstance(x, float):
+    elif isinstance(x, (float, np.float)):
         return math.cos(x)
     else:
         y = [math.cos(x[0]), math.cos(x[1])]

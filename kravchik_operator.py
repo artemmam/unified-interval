@@ -123,7 +123,7 @@ def centered_form(f, V, C, param):
         g_fin = sym.Matrix([g_fin, g_eval])
         #print(g_fin)
     g_fin = function_replacer(g_fin)
-    print("Krawczyk extension",g_fin)
+    print("Centered form",g_fin)
     return sym.lambdify([V, C, param], g_fin)
 
 
