@@ -4,7 +4,7 @@ from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter, iter_plot, plot_all_methods
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul, ExtCalcul
 from results_func import *
-from interval_checker import S_class
+#from interval_checker import S_class
 from log_functions import Logger
 from neumaier_theorem import Neumaier_solver
 from check_box import make_boxes_list
@@ -56,6 +56,9 @@ size = 2  # The dimension of uniform grid
 neumaier_boxes = []
 neumaier_boxes_border = []
 D = [ival.Interval([3, 15]), ival.Interval([3, 15])]
+print("%%%%%")
+print("Neumaier".upper())
+print("%%%%%")
 ns_1d = Neumaier_solver(f, U, V, D)
 box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
 all_boxes = make_boxes_list(grid, size)
@@ -70,14 +73,18 @@ for box in (all_boxes):
 # plot_circles(L1v, L2v, d)
 eps = 1e-3  # accuracy
 coef = 1.5
-
+print("%%%%%")
+print("Krawczyk".upper())
+print("%%%%%")
 ext_calcul = ClassicalKrawczykCalcul(f, U, V)
-ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
-bicentered_loger = Logger(grid, size, V_ival, eps, ext_calcul_bicentered)
-
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, eps)
+print("%%%%%")
+print("Bicentered Krawczyk".upper())
+print("%%%%%")
+ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
+bicentered_loger = Logger(grid, size, V_ival, eps, ext_calcul_bicentered)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul_bicentered, eps)
 print("NUMBER OF INSIDE BOXES")

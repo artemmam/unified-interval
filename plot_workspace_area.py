@@ -13,11 +13,19 @@ def plot_circles(r1, r2, d, ax):
     circle = plt.Circle((0.5*d, 0), radius=r2, fc='y', fill=False)
     ax.add_patch(circle)
 
-def onclick(event):
-    global ix, iy
-    ix = event.xdata
-    iy = event.ydata
-    gl_logger.find_box(ix, iy)
+class Clicker:
+    def __init__(self, logger, fig):
+        self.__logger = logger
+        self.fig = fig
+        self.cid = fig.canvas.mpl_connect('button_press_event', self)
+
+    def __call__(self, event):
+        ix = event.xdata
+        iy = event.ydata
+        self.__logger.find_box(ix, iy)
+
+
+
 
 def uni_plotter(area_points, border_points, L2, title, logger = 0, ax = 0):
     """
@@ -27,8 +35,8 @@ def uni_plotter(area_points, border_points, L2, title, logger = 0, ax = 0):
     :param L2: the size of boundary box
     :param title: the name of the method
     """
-    global gl_logger
-    gl_logger = logger
+    #global gl_logger
+    #gl_logger = logger
     plt.rcParams.update({'font.size': 18})
     left_border = -L2  # Left border of rectangle which we use to build uniform grid
     right_border = L2
@@ -56,9 +64,8 @@ def uni_plotter(area_points, border_points, L2, title, logger = 0, ax = 0):
     ax.set_title(title, fontsize=12)
     ax.tick_params(axis='both', which='major', labelsize=10)
     ax.tick_params(axis='both', which='minor', labelsize=8)
-    if logger!=0:
-        cid = fig.canvas.mpl_connect('button_press_event', onclick)
-
+    if logger != 0:
+        Click_Obj = Clicker(logger, fig)
 
 
 

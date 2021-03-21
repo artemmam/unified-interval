@@ -6,8 +6,8 @@ from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter, iter_plot
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
 from results_func import *
-from interval_checker import S_class
-from log_functions import Logger
+#from interval_checker import S_class
+from log_functions import Logger, Neumaier_Logger
 from neumaier_theorem import Neumaier_solver
 from check_box import make_boxes_list
 import warnings
@@ -53,10 +53,14 @@ grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 eps = 1e-6  # accuracy
 coef = 1.5
+print("%%%%%")
+print("Neumaier".upper())
+print("%%%%%")
 neumaier_boxes = []
 neumaier_boxes_border = []
 D = [v1, v2, v3, v4]
 ns_1d = Neumaier_solver(f, U, V, D)
+Neumaier_Log = Neumaier_Logger(2, grid, size, D, np.pi, ns_1d)
 box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
 all_boxes = make_boxes_list(grid, size)
 for box in all_boxes:
@@ -65,8 +69,10 @@ for box in all_boxes:
         neumaier_boxes.append(box)
     elif ch =="border":
         neumaier_boxes_border.append(box)
-uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", 0)
-
+uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", Neumaier_Log)
+print("%%%%%")
+print("Krawczyk".upper())
+print("%%%%%")
 ext_calcul = ClassicalKrawczykCalcul(f, U, V)
 # ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)

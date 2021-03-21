@@ -7,7 +7,7 @@ class Interval:
         self.x = x.copy()
 
     def __repr__(self):
-        return "[" + str(self.x[0]) + ", " + str(self.x[1]) + "]"
+        return "[" + str(round(self.x[0], 3)) + ", " + str(round(self.x[1], 3)) + "]"
 
     def mid(self):
         return 0.5 * (self.x[0] + self.x[1])

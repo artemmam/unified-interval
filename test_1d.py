@@ -3,7 +3,7 @@ import interval as ival
 from interval_checker import classical_checker
 from plot_workspace_area import uni_plotter, iter_plot, plot_all_methods
 from extension_calculator_class import ClassicalKrawczykCalcul, BicenteredKrawczykCalcul
-from interval_checker import S_class
+#from interval_checker import S_class
 from results_func import *
 from neumaier_theorem import Neumaier_solver
 from check_box import make_boxes_list
@@ -50,6 +50,9 @@ coef = 2  # Coefficient
 neumaier_boxes = []
 neumaier_boxes_border = []
 D = [ival.Interval([0, 1.2])]
+print("%%%%%")
+print("Neumaier".upper())
+print("%%%%%")
 ns_1d = Neumaier_solver(f, U, V, D)
 box = [ival.Interval([-1, 1]), ival.Interval([-1, 1])]
 #neumaier_boxes = ns_1d.solve(box)
@@ -66,12 +69,18 @@ end_neumaier = time.time()
 neumaier_time = end_neumaier - start_neumaier
 
 start_classical = time.time()
+print("%%%%%")
+print("Krawczyk".upper())
+print("%%%%%")
 ext_calcul = ClassicalKrawczykCalcul(f, U, V)
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, eps)
 end_classiccal = time.time()
 classical_time = end_classiccal - start_classical
 start_bic = time.time()
+print("%%%%%")
+print("Bicentered Krawczyk".upper())
+print("%%%%%")
 ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul_bicentered, eps)

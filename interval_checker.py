@@ -1,6 +1,5 @@
 import numpy as np
 from interval import Interval
-S_class = []
 PI2 = 2*np.pi
 
 
@@ -32,16 +31,20 @@ def classical_checker(box, v_init, eps, ext_calcul, log = False):
     """
     v_iter = v_init.copy()
     n = len(v_init)
-    # v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1) + Interval([0, 0.1])
-    # v_prev = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
     v_prev = v_iter.copy()
-    s = 0
+    k = 0
     while True:
-        s += 1
         v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
         check = True
+        if log:
+            print("*****")
+            print("Number of iteration =", k)
+            print("Old V = ", v_iter)
+            print("New V = ", v_ext)
         for i in range(n):
             if v_iter[i].isNoIntersec(v_ext[i]):
+                if log:
+                    print("Outside")
                 return 'outside'
             else:
                 v_iter[i] = v_iter[i].intersec(v_ext[i])
@@ -50,11 +53,15 @@ def classical_checker(box, v_init, eps, ext_calcul, log = False):
                 check = False
                 break
         if abs(diam(v_iter) - diam(v_prev))/(0.5*abs(diam(v_iter) + diam(v_prev))) < eps:
-            return 'border'
+            if log:
+                print("Border")
+            return "border"
         v_prev = v_iter.copy()
         if check:
-            return 'inside'
-
+            if log:
+                print("Inside")
+            return 'inside'  # if it is inside previous interval, then it's inside the workspace area
+        k += 1
 
 
 
