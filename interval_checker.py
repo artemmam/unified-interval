@@ -93,7 +93,7 @@ def classical_checker(box, v_init, eps, ext_calcul, log=False, decomposition=Fal
         if check:
             if log:
                 print("Inside")
-            return 'inside'  # if it is inside previous interval, then it's inside the workspace area
+            return 'inside'
         k += 1
 
 

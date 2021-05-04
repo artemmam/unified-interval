@@ -95,7 +95,6 @@ print("Neumaier", len(neumaier_boxes))
 # plot_circles(L1v, L2v, d)
 # uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", bicentered_loger)
 # plot_circles(L1v, L2v, d)
-#iter_plot(np.array(S_class), N)
 points = {}
 class_points = AllBoxes("Classical", area_points_uni, border_points_uni)
 bic_points = AllBoxes("Bicentered", area_points_uni_bicen, border_points_uni_bicen)

@@ -38,7 +38,6 @@ class Neumaier_solver:
         f_root = sym.lambdify([self.__V], f_root_sym)
         self.__func = function_replacer(self.__func)
         f_n = sym.lambdify([self.__V, self.__U], self.__func)
-        ### Finding zero in interval evalutaions
         f_n_init = f_n(self.__D, ini_box).reshape(-1)
         C_left = []
         C_right = []
@@ -46,42 +45,18 @@ class Neumaier_solver:
             for j in range(len(self.__D)):
                 C_left.append(self.__D[i][0])
                 C_right.append(self.__D[i][1])
-        # ### Bicentered evaluation
-        # C_min_bicen, C_max_bicen = self.__centered_calcul.calcul_new_c(self.__D, ini_box)
-        # C_min_bicen = C_min_bicen.reshape(len(self.__D) * len(self.__D))
-        # C_max_bicen = C_max_bicen.reshape(len(self.__D) * len(self.__D))
-        # f_ext_min_bicen, f_ext_max_bicen = self.__centered_calcul.calculated_centered_form(ini_box, self.__D,
-        #                                                                                    C_min_bicen).reshape(-1), \
-        #                                    self.__centered_calcul.calculated_centered_form(ini_box, self.__D,
-        #                                                                                    C_max_bicen).reshape(-1)
-        # ### Mean-valued evaluation
-        # f_n_init_centered_right = self.__centered_calcul.calculated_centered_form(ini_box, self.__D, C_right).reshape(
-        #     -1)
-        # f_n_init_centered_left = self.__centered_calcul.calculated_centered_form(ini_box, self.__D, C_left).reshape(-1)
-        # f_n_init_centered = []
-        # f_ext_bicen = []
-
-        # for i in range(len(f_n_init_centered_left)):
-        #     f_n_init_centered.append(f_n_init_centered_left[i].intersec(f_n_init_centered_right[i]))
-        #     f_ext_bicen.append(f_ext_min_bicen[i].intersec(f_ext_max_bicen[i]))
         if log:
             print("Interval evaluations:")
             print("Natural")
             print(f_n_init)
-            # print("Mean-valued form:")
-            # print(f_n_init_centered)
-            # print("Bicentered")
-            # print(f_ext_bicen)
         for i in range(len(f_n_init)):
-            if not ival.Interval([0, 0]).isIn(
-                    f_n_init[i]):  # (f_n_init_centered_left[i].intersec(f_n_init_centered_right[i])):
+            if not ival.Interval([0, 0]).isIn(f_n_init[i]):
                 if log:
                     print("Out")
                 return "out"
         init = []
         for i in range(N):
             init.append(ini_value)
-        # Find adn check roots root
         result = optimize.root(f_root, init, method='anderson', tol=1e-12)
         X = result.x
         check_in_roots = []
@@ -95,9 +70,6 @@ class Neumaier_solver:
             check_root = False
         if log:
             print("Find root?", check_root)
-
-
-        ### Check zeros on borders
         if N == 1 and len(self.__U) == 1:
             check_borders.append(self.check_zeros(f_n([self.__D[0][0]], [ini_box])))
             check_borders.append(self.check_zeros(f_n([self.__D[0][1]], [ini_box])))

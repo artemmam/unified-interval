@@ -80,14 +80,9 @@ area_points_uni, border_points_uni = check_box(grid, size, V_ival,
 
 
 # uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger, size=size)
-# plt.plot([-r, r], [0, 0], color = "r", lw = 6, alpha = 0.3)
-#plot_area(l_a, l_b)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
                                               classical_checker, ext_calcul_bicentered, eps)
 # uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger, size=size)
-# plt.plot([-r, r], [0, 0], color = "r", lw = 6, alpha = 0.3)
-#
-# #iter_plot(np.array(S_class), N)
 points = {}
 class_points = AllBoxes("Classical", area_points_uni, border_points_uni)
 bic_points = AllBoxes("Bicentered", area_points_uni_bicen, border_points_uni_bicen)
