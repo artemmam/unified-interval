@@ -91,10 +91,10 @@ print("Classiccal", len(area_points_uni))
 print("Bicentered", len(area_points_uni_bicen))
 print("Neumaier", len(neumaier_boxes))
 
-print("TIME")
-print("Classiccal", classical_time)
-print("Bicentered", bic_time)
-print("Neumaier", neumaier_time)
+# print("TIME")
+# print("Classiccal", classical_time)
+# print("Bicentered", bic_time)
+# print("Neumaier", neumaier_time)
 # uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "Neumaier")
 # circle = plt.Circle((0, 0), radius=1, fc='y', fill=False)
 # plt.gca().add_patch(circle)
@@ -117,7 +117,7 @@ points["Classical"] = class_points
 points["Bicentered"] = bic_points
 points["Neumaier"] = neumaier_points
 methods = ["Classical", "Bicentered", "Neumaier"]
-plot_all_methods(methods, points, L2u, "circle")
+plot_all_methods(methods, points, L2u, "circle", size=size)
 plt.show()
 
 

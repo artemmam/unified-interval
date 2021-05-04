@@ -69,6 +69,7 @@ class ExtCalcul:
         :return: matrix lambda
         """
         param = [U]
+        #print(V, U)
         FV = self.fv(V, param)
         #print(FV)
         M = np.zeros_like(FV)
@@ -114,6 +115,12 @@ class ExtCalcul:
         return c_min, c_max
 
     def calculated_centered_form(self, box, V, C = []):
+        """
+        :param box: box to check
+        :param V: variables for checking
+        :param C: "centers" for centered form
+        :return: centered form for self.func
+        """
         param = box
         C = np.array(C).reshape(len(V), len(V)).T.reshape(len(V) * len(V))
         return np.array(self.func(V, C, param))

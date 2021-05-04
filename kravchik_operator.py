@@ -58,6 +58,8 @@ def derived_f(f, v, u):
     fv = derive_matrix(f, v)
 
     fv = function_replacer(fv)
+    # print("derived")
+    # print(fv)
     return sym.lambdify([v, param], fv)
 
 
@@ -77,8 +79,7 @@ def recurrent_form(f, V, lam):
     print("#####")
     print("Recurrent form ".upper())
     print("#####")
-    for v in rec_form:
-        print(v)
+    print(rec_form)
     return rec_form  # Equivalent recurrent transformation
 
 
@@ -129,7 +130,6 @@ def centered_form(f, V, C, param):
         f_s = f.subs(subsv)
         g_eval = sym.Matrix([f_s[i]]) + g_v.T * v_c  # Classical central form
         g_fin = sym.Matrix([g_fin, g_eval])
-        #print(g_fin)
     g_fin = function_replacer(g_fin)
     print("#####")
     print("Mean-valued form".upper())

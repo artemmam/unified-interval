@@ -104,7 +104,7 @@ points["Classical"] = class_points
 points["Bicentered"] = bic_points
 points["Neumaier"] = neumaier_points
 methods = ["Classical", "Bicentered", "Neumaier"]
-plot_all_methods(methods, points, L2u, "2rpr", L1v, L2v, d)
+plot_all_methods(methods, points, L2u, "2rpr", size=size, L1v=L1v, L2v=L2v, d=d)
 plt.show()
 
 
