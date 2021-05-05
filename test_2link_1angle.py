@@ -76,7 +76,7 @@ ext_calcul = ClassicalKrawczykCalcul(f, U, V)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-                                               classical_checker, ext_calcul, eps, decomp=True)
+                                               classical_checker, ext_calcul, eps, decomp=False)
 
 
 # uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger, size=size)

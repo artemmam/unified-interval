@@ -34,7 +34,7 @@ def func_dextar(l_a, l_b, l_c, l_d, d):
     return f, U, V
 
 
-N = 20  # The number of nodes on uniform grid
+N = 40  # The number of nodes on uniform grid
 ##### 2-RPR
 L1v = 0  # Lower range of row
 L2v = 2*pi   # Upper range of row

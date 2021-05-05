@@ -53,36 +53,37 @@ grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 eps = 1e-6  # accuracy
 coef = 1.5
-# print("%%%%%")
-# print("Neumaier".upper())
-# print("%%%%%")
-# neumaier_boxes = []
-# neumaier_boxes_border = []
-# D = [v1, v2]
-# ns_1d = Neumaier_solver(f, U, V, D)
-# Neumaier_Log = Neumaier_Logger(2, grid, size, D, np.pi, ns_1d)
-# box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
-# all_boxes = make_boxes_list(grid, size)
-# for box in all_boxes:
-#     ch = ns_1d.check_box(box, np.pi)
-#     if ch == "in":
-#         neumaier_boxes.append(box)
-#     elif ch =="border":
-#         neumaier_boxes_border.append(box)
-# uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", Neumaier_Log)
-# plot_area(l_a, l_b)
+print("%%%%%")
+print("Neumaier".upper())
+print("%%%%%")
+neumaier_boxes = []
+neumaier_boxes_border = []
+D = [v1, v2]
+ns_1d = Neumaier_solver(f, U, V, D)
+Neumaier_Log = Neumaier_Logger(grid, size, D, np.pi, ns_1d)
+box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
+all_boxes = make_boxes_list(grid, size)
+for box in all_boxes:
+    ch = ns_1d.check_box(box, np.pi)
+    if ch == "in":
+        neumaier_boxes.append(box)
+    elif ch =="border":
+        neumaier_boxes_border.append(box)
+uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", Neumaier_Log)
+plot_area(l_a, l_b)
 print("%%%%%")
 print("Krawczyk".upper())
 print("%%%%%")
 ext_calcul = ClassicalKrawczykCalcul(f, U, V)
-# ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
+ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, eps)
-# area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
-#                                               classical_checker, ext_calcul_bicentered, eps)
+area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
+                                              classical_checker, ext_calcul_bicentered, eps)
 uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger)
 plot_area(l_a, l_b)
-# uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger)
+uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger)
+plot_area(l_a, l_b)
 plt.show()
 

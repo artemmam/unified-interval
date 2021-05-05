@@ -60,7 +60,6 @@ print("%%%%%")
 print("Neumaier".upper())
 print("%%%%%")
 ns_1d = Neumaier_solver(f, U, V, D)
-box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
 all_boxes = make_boxes_list(grid, size)
 start_neumaier = time.time()
 for box in (all_boxes):
