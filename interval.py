@@ -9,6 +9,11 @@ class Interval:
     def __repr__(self):
         return "[" + str(round(self.x[0], 3)) + ", " + str(round(self.x[1], 3)) + "]"
 
+        # return "[" + str(self.x[0]) + ", " + str(self.x[1])+ "]"
+    def __round__(self, n=3):
+        return Interval([np.round(self.x[0], 3), np.round(self.x[1], 3)])
+
+
     def mid(self):
         return 0.5 * (self.x[0] + self.x[1])
 
@@ -60,10 +65,14 @@ class Interval:
 
     def __sub__(self, other):
         ointerval = valueToInterval(other)
-        ninterval = Interval(self.x)
-        ninterval.x[0] = self.x[0] - ointerval.x[1]
-        ninterval.x[1] = self.x[1] - ointerval.x[0]
-        return ninterval
+        if not(isinstance(other, list)):
+            ninterval = Interval(self.x)
+            ninterval.x[0] = self.x[0] - ointerval.x[1]
+            ninterval.x[1] = self.x[1] - ointerval.x[0]
+            return ninterval
+        else:
+            print("problem here")
+
 
 
     def __rsub__(self, other):
@@ -99,8 +108,34 @@ class Interval:
         ointerval = valueToInterval(other)
         v = [self.x[0] / ointerval.x[0], self.x[0] / ointerval.x[1], self.x[1] / ointerval.x[0],
              self.x[1] / ointerval.x[1]]
-        b = [min(v), max(v)]
-        return Interval(b)
+        f = [min(v), max(v)]
+        # return Interval(f)
+        if not(valueToInterval(0).isIn(ointerval)):
+            v = [self.x[0] / ointerval.x[0], self.x[0] / ointerval.x[1], self.x[1] / ointerval.x[0],
+                 self.x[1] / ointerval.x[1]]
+            f = [min(v), max(v)]
+            return Interval(f)
+        else:
+            c = []
+            v = [self.x[0] / ointerval.x[0], self.x[0] / ointerval.x[1], self.x[1] / ointerval.x[0],
+                 self.x[1] / ointerval.x[1]]
+            a1, a2 = self.x[0], self.x[1]
+            b1, b2 = ointerval.x[0], ointerval.x[1]
+            if b2 == 0 and a2 <=0:
+                c = [a2/b1, np.inf]
+            elif a2 < 0 and b1 < 0 and b2 > 0:
+                c = [[-np.inf, a2/b2], [a2/b1, np.inf]]
+            elif a2 <= 0 and b1 == 0:
+                c = [-np.inf, a2/b2]
+            elif a1 >= 0 and b2 == 0:
+                c = [-np.inf, a1/b1]
+            elif a1 > 0 and b1 < 0 and b2 > 0:
+                c = [[-np.inf, a1/b1], [a1/b2, np.inf]]
+            elif a1 >= 0 and b1 == 0:
+                c = [a1/b2, np.inf]
+            elif a1 < 0 and a2 > 0:
+                c = [-np.inf, np.inf]
+            return Interval(c)
 
     def __floordiv__(self, other):
         ointerval = valueToInterval(other)
@@ -113,7 +148,16 @@ class Interval:
         return self.__mul__(other)
 
     def __rtruediv__(self, other):
-        return self.__truediv__(other)
+        ointerval = valueToInterval(other)
+        return ointerval.__truediv__(self)
+
+
+def isIn_ival_arr(a, b):
+    check = []
+    for i in range(len(a)):
+        if (a[i].isIn(b[i])):
+            check.append(True)
+    return check
 
 
 def valueToInterval(expr):

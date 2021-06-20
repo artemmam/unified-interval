@@ -7,7 +7,7 @@ import pyautogui
 
 class Logger:
 
-    def __init__(self, grid, size, v_init, eps, ext_calcul):
+    def __init__(self, grid, size, v_init, eps, ext_calcul, decomp = False):
         """
         :param grid: grid
         :param size: the size of the grid
@@ -20,6 +20,7 @@ class Logger:
         self.__v_init = v_init
         self.__eps = eps
         self.__ext_calcul = ext_calcul
+        self.__decomp = decomp
 
     def find_box(self, x, y):
         L = len(self.__v_init)
@@ -38,7 +39,7 @@ class Logger:
                     break
         print("v_init:", self.__v_init)
         print("Lambda", self.__ext_calcul.calculate_lam(self.__v_init, box).reshape((L, L)))
-        classical_checker(box, self.__v_init, self.__eps, self.__ext_calcul, log=True)
+        classical_checker(box, self.__v_init, self.__eps, self.__ext_calcul, log=True, decomposition=self.__decomp)
         print("-----\n\n\n")
 
 
@@ -69,5 +70,3 @@ class Neumaier_Logger(Logger):
                 break
         print("v_init:", self.__V)
         self.__neumaier.check_box(box, self.__ini_value, log = True)
-
-

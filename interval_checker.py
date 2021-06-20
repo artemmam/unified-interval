@@ -34,7 +34,18 @@ def classical_checker(box, v_init, eps, ext_calcul, log=False, decomposition=Fal
     if log:
         print("box", box)
     while True:
-        v_ext = ext_calcul.calculate_extension(box, v_iter).reshape(-1)
+        v_ext = ext_calcul.calculate_extension(box, v_iter)
+        if isinstance(v_ext, str):
+            if log:
+                print(v_ext)
+            if v_ext == "out":
+                return "out"
+            elif v_ext == "border":
+                return "border"
+            elif v_ext == "inside":
+                return "inside"
+        else:
+            v_ext = v_ext.reshape(-1)
         check = True
         if log:
             print("*****")

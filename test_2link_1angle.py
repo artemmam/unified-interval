@@ -12,6 +12,8 @@ from neumaier_theorem import Neumaier_solver
 from check_box import make_boxes_list
 import warnings
 from all_boxes_class import AllBoxes
+import sys
+from Hansen_Sengupta import HansenSenguptaSolver
 warnings.filterwarnings("ignore")
 
 def plot_area(a, b):
@@ -50,22 +52,29 @@ grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
 size = 1  # The dimension of uniform grid
 eps = 1e-6  # accuracy
 coef = 1.5
-print("%%%%%")
-print("Neumaier".upper())
-print("%%%%%")
-neumaier_boxes = []
-neumaier_boxes_border = []
-D = [v1]
-ns_1d = Neumaier_solver(f, U, V, D)
-Neumaier_Log = Neumaier_Logger(grid, size, D, np.pi, ns_1d)
-box = [ival.Interval([-L2u, L2u])]
-all_boxes = make_boxes_list(grid, size)
-for box in all_boxes:
-    ch = ns_1d.check_box(box, np.pi)
-    if ch == "in":
-        neumaier_boxes.append(box)
-    elif ch =="border":
-        neumaier_boxes_border.append(box)
+### Hansen-Sengupta solver
+HS_solver = HansenSenguptaSolver(f, U, V)
+area_points_HS, border_points_HS = check_box(grid, size, V_ival,
+                                               classical_checker, HS_solver, eps= 1e-3, log = True)
+uni_plotter(area_points_HS, border_points_HS, L2u, "Hansen-Sengupta", size = size)
+plt.plot([-r, r], [0, 0], color = "r", lw = 6, alpha = 0.3)
+
+# print("%%%%%")
+# print("Neumaier".upper())
+# print("%%%%%")
+# neumaier_boxes = []
+# neumaier_boxes_border = []
+# D = [v1]
+# ns_1d = Neumaier_solver(f, U, V, D)
+# Neumaier_Log = Neumaier_Logger(grid, size, D, np.pi, ns_1d)
+# box = [ival.Interval([-L2u, L2u])]
+# all_boxes = make_boxes_list(grid, size)
+# for box in all_boxes:
+#     ch = ns_1d.check_box(box, np.pi)
+#     if ch == "in":
+#         neumaier_boxes.append(box)
+#     elif ch =="border":
+#         neumaier_boxes_border.append(box)
 # uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", Neumaier_Log, size =size)
 # plt.plot([-r, r], [0, 0], color = "r", lw = 6, alpha = 0.3)
 #plot_area(l_a, l_b)
@@ -75,21 +84,27 @@ print("%%%%%")
 ext_calcul = ClassicalKrawczykCalcul(f, U, V)
 ext_calcul_bicentered = BicenteredKrawczykCalcul(f, U, V, coef)
 classical_loger = Logger(grid, size, V_ival, eps, ext_calcul)
+bicentered_loger = Logger(grid, size, V_ival, eps, ext_calcul_bicentered)
 area_points_uni, border_points_uni = check_box(grid, size, V_ival,
-                                               classical_checker, ext_calcul, eps, decomp=False)
+                                               classical_checker, ext_calcul, eps, decomp=True)
 
 
-# uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger, size=size)
+uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger, size=size)
+plt.plot([-r, r], [0, 0], color = "r", lw = 6, alpha = 0.3)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
                                               classical_checker, ext_calcul_bicentered, eps)
-# uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger, size=size)
-points = {}
-class_points = AllBoxes("Classical", area_points_uni, border_points_uni)
-bic_points = AllBoxes("Bicentered", area_points_uni_bicen, border_points_uni_bicen)
-neumaier_points = AllBoxes("Neumaier", neumaier_boxes, neumaier_boxes_border)
-points["Classical"] = class_points
-points["Bicentered"] = bic_points
-points["Neumaier"] = neumaier_points
-methods = ["Classical", "Bicentered", "Neumaier"]
-plot_all_methods(methods, points, L2u, "2links1angle", size=size, r=r)
+uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", bicentered_loger, size=size)
+plt.plot([-r, r], [0, 0], color = "r", lw = 6, alpha = 0.3)
 plt.show()
+
+
+# points = {}
+# class_points = AllBoxes("Classical", area_points_uni, border_points_uni)
+# bic_points = AllBoxes("Bicentered", area_points_uni_bicen, border_points_uni_bicen)
+# neumaier_points = AllBoxes("Neumaier", neumaier_boxes, neumaier_boxes_border)
+# points["Classical"] = class_points
+# points["Bicentered"] = bic_points
+# points["Neumaier"] = neumaier_points
+# methods = ["Classical", "Bicentered", "Neumaier"]
+# # plot_all_methods(methods, points, L2u, "2links1angle", size=size, r=r)
+# plt.show()

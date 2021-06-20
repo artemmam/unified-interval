@@ -1,6 +1,6 @@
 import interval as ival
 import numpy as np
-
+import itertools as it
 
 def make_boxes_list(grid, dim):
     """
@@ -9,22 +9,15 @@ def make_boxes_list(grid, dim):
     :param dim:  the dimensional of grid
     :return: the list of boxes in dim
     """
-    U = []
     grid_size = len(grid) - 1
-    fix = 0
-    for i in range(grid_size ** dim):
-        for j in range(dim):
-            if i % grid_size == 0 and i != 0 and j == 0:
-                fix += 1
-            if j == 0:
-                U.append(ival.Interval([grid[i % grid_size], grid[i % grid_size + 1], 1]))
-            else:
-                U.append(ival.Interval([grid[fix % grid_size], grid[fix % grid_size + 1]]))
-            # if j == 0:
-            #     U.append(ival.Interval([np.round(grid[i % grid_size], 1), np.round(grid[i % grid_size + 1], 1)]))
-            # else:
-            #     U.append(ival.Interval([np.round(grid[fix % grid_size], 1), np.round(grid[fix % grid_size + 1], 1)]))
-    return np.reshape(U, (grid_size ** dim, dim))
+    f = []
+    array = []
+    for i in range(grid_size):
+        f.append(ival.Interval([grid[i], grid[i + 1]]))
+    for i in range(dim):
+        array.append(f)
+    A = list(it.product(*array))
+    return A
 
 
 def check_box(grid, dim, V, checker, ext_calcul, eps, log = False, decomp = False):

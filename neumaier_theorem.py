@@ -35,6 +35,8 @@ class Neumaier_solver:
         for j in range(len(self.__U)):
             subsv.append((self.__U[j], box_mid[j]))
         f_root_sym = self.__func.subs(subsv)
+        if log:
+            print(f_root_sym)
         f_root = sym.lambdify([self.__V], f_root_sym)
         self.__func = function_replacer(self.__func)
         f_n = sym.lambdify([self.__V, self.__U], self.__func)
@@ -91,7 +93,9 @@ class Neumaier_solver:
                     print(variants)
                 for var in variants:
                     var = list(var)
-                    check_borders.append(self.check_zeros(f_n(var, [ini_box[0], ini_box[1]])))
+                    if log:
+                        print(var)
+                    check_borders.append(self.check_zeros(f_n(var, ini_box), log=log))
         if log:
             print("Check borders?", check_borders)
         if check_root and np.all(check_borders):
@@ -103,9 +107,12 @@ class Neumaier_solver:
                 print("Border")
             return "border"
 
-    def check_zeros(self, a):
+    def check_zeros(self, a, log = False):
+
         a = a.reshape(-1)
         a = a.reshape(-1)
+        if log:
+            print(a)
         tmp = True
         for i in range(len(a)):
             ai = a[i]

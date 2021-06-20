@@ -11,6 +11,8 @@ from log_functions import Logger, Neumaier_Logger
 from neumaier_theorem import Neumaier_solver
 from check_box import make_boxes_list
 import warnings
+import sys
+from Hansen_Sengupta import HansenSenguptaSolver
 warnings.filterwarnings("ignore")
 
 def plot_area(a, b):
@@ -37,40 +39,49 @@ def func_2links_2angles(l_a, l_b):
     return f, U, V
 
 
-N = 20  # The number of nodes on uniform grid
+N = 30  # The number of nodes on uniform grid
 ##### 2-RPR
-L1v = 0  # Lower range of row
-L2v = 2*pi    # Upper range of row
-l_a = 30
-l_b = 10
+L1v = pi/4  # Lower range of row
+L2v = pi/3    # Upper range of row
+l_a = 4
+l_b = 2
 v1 = ival.Interval([L1v, L2v])
 v2 = ival.Interval([L1v, L2v])
 V_ival = [v1, v2]
 
-L2u = l_a + l_b + 15   # the width of the 2-dimensional square
+L2u = l_a + l_b + int((l_a + l_b)*0.25)   # the width of the 2-dimensional square
 f, U, V = func_2links_2angles(l_a, l_b)
-grid = np.linspace(-L2u, L2u, N + 1)  # The vector to build size-dim. grid
+grid = np.linspace(0, 6, N + 1)  # The vector to build size-dim. grid
 size = 2  # The dimension of uniform grid
 eps = 1e-6  # accuracy
 coef = 1.5
-print("%%%%%")
-print("Neumaier".upper())
-print("%%%%%")
-neumaier_boxes = []
-neumaier_boxes_border = []
-D = [v1, v2]
-ns_1d = Neumaier_solver(f, U, V, D)
-Neumaier_Log = Neumaier_Logger(grid, size, D, np.pi, ns_1d)
-box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
-all_boxes = make_boxes_list(grid, size)
-for box in all_boxes:
-    ch = ns_1d.check_box(box, np.pi)
-    if ch == "in":
-        neumaier_boxes.append(box)
-    elif ch =="border":
-        neumaier_boxes_border.append(box)
-uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", Neumaier_Log)
+### Hansen-Sengupta solver
+
+HS_solver = HansenSenguptaSolver(f, U, V)
+hansen_sengupta_loger = Logger(grid, size, V_ival, eps, HS_solver)
+area_points_HS, border_points_HS = check_box(grid, size, V_ival,
+                                               classical_checker, HS_solver, eps= 1e-3, log = False, decomp=False)
+uni_plotter(area_points_HS, border_points_HS, L2u, "Hansen-Sengupta", logger=hansen_sengupta_loger, size=2)
 plot_area(l_a, l_b)
+
+# print("%%%%%")
+# print("Neumaier".upper())
+# print("%%%%%")
+# neumaier_boxes = []
+# neumaier_boxes_border = []
+# D = [v1, v2]
+# ns_1d = Neumaier_solver(f, U, V, D)
+# Neumaier_Log = Neumaier_Logger(grid, size, D, np.pi, ns_1d)
+# box = [ival.Interval([-L2u, L2u]), ival.Interval([-L2u, L2u])]
+# all_boxes = make_boxes_list(grid, size)
+# for box in all_boxes:
+#     ch = ns_1d.check_box(box, np.pi)
+#     if ch == "in":
+#         neumaier_boxes.append(box)
+#     elif ch =="border":
+#         neumaier_boxes_border.append(box)
+# uni_plotter(neumaier_boxes, neumaier_boxes_border, L2u, "neumaier", Neumaier_Log, size = 2)
+# plot_area(l_a, l_b)
 print("%%%%%")
 print("Krawczyk".upper())
 print("%%%%%")
@@ -81,9 +92,9 @@ area_points_uni, border_points_uni = check_box(grid, size, V_ival,
                                                classical_checker, ext_calcul, eps)
 area_points_uni_bicen, border_points_uni_bicen = check_box(grid, size, V_ival,
                                               classical_checker, ext_calcul_bicentered, eps)
-uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger)
+uni_plotter(area_points_uni, border_points_uni, L2u, "Classical Krawczyk", classical_loger, size = 2)
 plot_area(l_a, l_b)
-uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger)
+uni_plotter(area_points_uni_bicen, border_points_uni_bicen, L2u, "Bicentered Krawczyk", classical_loger, size = 2)
 plot_area(l_a, l_b)
 plt.show()
 

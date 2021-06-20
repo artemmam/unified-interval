@@ -1,5 +1,6 @@
 import numpy as np
-from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form, centered_form
+from kravchik_operator import krawczyk_eval, derived_f, derived_recurrent_form, centered_form, sym_derived_f, \
+    function_replacer
 import sympy as sym
 import interval as ival
 
@@ -18,6 +19,8 @@ class ExtCalcul:
         self.__v = v
         self.__coef = coef
         self.__fv = derived_f(self.f, self.v, self.u)
+        print("Jacobian")
+        print(sym_derived_f(self.f, self.v, self.u))
         self.__func = self.func_calcul()
 
     def calculate_extension(self):
@@ -75,7 +78,7 @@ class ExtCalcul:
         M = np.zeros_like(FV)
         for i in range(len(FV)):
             for j in range(len(FV)):
-                M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
+                M[i, j] = coef*ival.valueToInterval(FV[i, j])[1]
         M = M.astype(np.float64)
         if np.linalg.det(M) == 0:
             return np.linalg.inv(M + np.eye(len(FV))).reshape(len(V)*len(V))
@@ -140,7 +143,7 @@ class ClassicalKrawczykCalcul(ExtCalcul):
                 lam.append(sym.symbols("lam" + str(i) + str(j)))
         return krawczyk_eval(self.f, self.u, self.v, lam, c)
 
-    def calculate_extension(self, box, V):
+    def calculate_extension(self, box, V, log = False):
         """
         Function for calculation interval Krawczyk extension
         :param box: box to check
@@ -228,7 +231,7 @@ class BicenteredKrawczykCalcul(ExtCalcul):
                     c_max[i][j] = (new_v[i][j][0] * V[j][0] - new_v[i][j][1] * V[j][1]) / (new_v[i][j][0] - new_v[i][j][1])
         return c_min, c_max
 
-    def calculate_extension(self, box, V):
+    def calculate_extension(self, box, V, log = False):
         """
         Function for calculation interval Bicentered Krawczyk extension
         :param box: box to check
@@ -245,3 +248,64 @@ class BicenteredKrawczykCalcul(ExtCalcul):
         for i in range(len(V)):
             v_bic.append(v_ext_min[i][0].intersec(v_ext_max[i][0]))
         return np.array(v_bic).T
+
+class ModernizedClassicalKrawczykCalcul(ExtCalcul):
+    def calculate_lam(self, V, U, coef=1):
+        """
+        Function for calculation matrix lambda (L = (mid(F'))**-1)
+        :param V: variables
+        :param U: box to check
+        :return: matrix lambda
+        """
+        param = [U]
+        #print(V, U)
+        FV = self.fv(V, param)
+        #print(FV)
+        M = np.zeros_like(FV)
+        for i in range(len(FV)):
+            for j in range(len(FV)):
+                M[i, j] = coef*ival.valueToInterval(FV[i, j]).mid()
+        M = M.astype(np.float64)
+        if np.linalg.det(M) == 0:
+            return np.linalg.inv(M + np.eye(len(FV)))
+        else:
+            return np.linalg.inv(M)
+
+    def sym_R(self, V, box, log = False):
+        Lam = np.array(self.calculate_lam(V, box))
+        J = sym_derived_f(self.f, self.v)
+        if log:
+            print(np.dot(-Lam, J))
+        return np.eye(len(V)) - np.dot(Lam, J)
+
+    def calculate_extension(self, box, V, log=False):
+        N = len(V)
+        V = np.array(V)
+        Lam = np.array(self.calculate_lam(V, box))
+        C = []
+        for v in V:
+            C.append(v.mid())
+        C = np.array(C)
+        f_num = sym.lambdify([self.v, self.u], function_replacer(self.f))
+        Fc = np.array(f_num(C, box))
+        g = np.dot(Lam, Fc)
+        J = self.fv(V, [box])
+        R = np.eye(len(V)) - np.dot(Lam, J)
+        if log:
+            print(Lam)
+            print(Fc)
+            print("g", g)
+            print("R", R)
+        K = V.copy()
+        X = V.copy()
+        K_intersec = K.copy()
+        for i in range(N):
+            s1 = 0
+            s2 = 0
+            for j in range(i):
+                K_intersec[j] = K[j].intersec(X[j])
+                s1 += R[i, j]*(K_intersec[j] - C[j])
+            for j in range(i, N):
+                s2 += R[i, j]*(X[j] - C[j])
+            K[i] = (C[i] - g[i] + s1 + s2)[0]
+        return K

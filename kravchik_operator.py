@@ -46,6 +46,20 @@ def function_replacer(fv):
     fv = fv.replace(cos, mycos1)
     return fv
 
+def sym_derived_f(f, v, u):
+    """
+    Produce numerical derived function
+    :param f: old right-hand side
+    :param v: list of checking intervals
+    :param u: list of fixed intervals
+    :return: function of numerical derived form
+    """
+    fv = derive_matrix(f, v)
+    fv = function_replacer(fv)
+    # print("derived")
+    # print(fv)
+    return fv
+
 def derived_f(f, v, u):
     """
     Produce numerical derived function
